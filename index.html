@@ -3,105 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web - Giây Nhỏ Hơn</title>
+    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Căn chỉnh và Responsive)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400..700&display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             background: linear-gradient(135deg, #1f263e, #3c1a4f);
             font-family: 'Orbitron', sans-serif;
             color: #e0e0e0;
             margin: 0;
-            overflow: hidden;
+            overflow: auto;
+            padding: 30px 0;
         }
 
         .clock-container {
-            position: relative; /* Cần thiết cho định vị tuyệt đối của nút con */
+            position: relative;
             text-align: center;
             background-color: rgba(10, 10, 20, 0.7);
-            padding: 40px 50px;
+            padding: 40px 5%; /* Sử dụng % cho padding ngang */
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(5px);
+            width: 90%;
+            max-width: 700px;
         }
 
-        /* Nút chuyển đổi 12h/24h được định vị tuyệt đối */
-        #format-toggle-btn {
+        /* Nút chuyển đổi 12h/24h và Giữ sáng */
+        .top-controls {
             position: absolute;
-            top: 15px;  /* Khoảng cách từ trên */
-            right: 15px; /* Khoảng cách từ phải */
-            background-color: rgba(255, 255, 255, 0.2); /* Nền mờ nhẹ */
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+            justify-content: flex-end; /* Căn phải */
+            gap: 10px;
+            z-index: 10;
+        }
+        .top-controls button {
+            background-color: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: #e0e0e0;
-            padding: 5px 10px; /* Kích thước nhỏ hơn */
+            padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem; /* Font nhỏ hơn */
+            font-size: 0.8rem;
             font-weight: 500;
             transition: background-color 0.3s ease, border-color 0.3s ease;
-            z-index: 10; /* Đảm bảo nút nổi lên trên */
         }
-
-        #format-toggle-btn:hover {
+        .top-controls button:hover {
             background-color: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.5);
         }
+        #wake-lock-btn.active {
+            background-color: #f0a500;
+            color: #111;
+            border-color: #f0a500;
+        }
+         #wake-lock-btn:disabled {
+             opacity: 0.5;
+             cursor: not-allowed;
+             filter: grayscale(80%);
+         }
+
+
+        /* --- Đồng hồ chính - Phần được làm nổi bật --- */
+        .clock-frame {
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            border-radius: 15px;
+            padding: 20px 5% 15px 5%; /* Sử dụng % cho padding ngang */
+            margin-bottom: 25px;
+            background-color: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 15px rgba(102, 252, 241, 0.15);
+        }
 
         .digital-clock {
-            font-size: 5rem; /* Kích thước chính cho giờ và phút */
             font-weight: 700;
-            margin-bottom: 15px;
-            min-height: 80px; /* Điều chỉnh nếu cần sau khi thay đổi size giây */
-            letter-spacing: 5px;
-            text-shadow: 0 0 10px rgba(102, 252, 241, 0.5);
-            /* Căn chỉnh các phần tử bên trong theo baseline mặc định thường ổn */
-            /* display: flex; align-items: baseline; */ /* Cân nhắc nếu căn chỉnh mặc định không tốt */
+            min-height: auto;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.6);
+            display: flex;
+            justify-content: center;
+            /* <<< THAY ĐỔI ALIGNMENT ĐỂ CĂN GIỮA >>> */
+            align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+            flex-wrap: wrap; /* Cho phép xuống dòng nếu màn hình quá hẹp */
         }
-
-        /* Màu sắc và kích thước riêng */
+        /* Áp dụng font monospace và kích thước */
+        #hours, #minutes, #seconds, .colon, .ampm {
+            font-family: 'Roboto Mono', monospace;
+            display: inline-block; /* Giữ inline-block để các phần tử liền nhau */
+            white-space: nowrap; /* Ngăn không cho số bị ngắt dòng */
+        }
         #hours {
+            font-size: clamp(3.5rem, 12vw, 5.5rem); /* Kích thước linh hoạt */
             color: #66fcf1;
-            min-width: 80px; /* Giữ nguyên hoặc điều chỉnh */
+            /* min-width không còn quá cần thiết với flex */
         }
         #minutes {
+            font-size: clamp(3.5rem, 12vw, 5.5rem); /* Kích thước linh hoạt */
             color: #a7ff83;
-            min-width: 80px; /* Giữ nguyên hoặc điều chỉnh */
         }
         #seconds {
+            font-size: clamp(1.5rem, 6vw, 2rem); /* Kích thước linh hoạt */
             color: #f7797d;
-            font-size: 3.5rem; /* <<< THAY ĐỔI KÍCH THƯỚC GIÂY Ở ĐÂY */
-            vertical-align: baseline; /* <<< CĂN CHỈNH GIÂY */
-            min-width: 60px; /* Giảm min-width nếu cần */
+            opacity: 0.7;
+            /* <<< BỎ ALIGN-SELF VÀ MARGIN-BOTTOM >>> */
+            /* align-self: flex-end; */
+            /* margin-bottom: 5px; */
+            margin-left: -2px; /* Giảm khoảng cách với dấu hai chấm */
         }
-
-        /* Không cần định dạng riêng cho .digital-clock span nữa vì đã định dạng từng ID */
-        /* .digital-clock span:not(.ampm) { ... } */
+        .colon {
+            font-size: clamp(3rem, 10vw, 4.5rem); /* Kích thước linh hoạt */
+            color: #e0e0e0;
+            margin: 0 clamp(-5px, -1vw, -2px); /* Khoảng cách linh hoạt */
+            opacity: 0.7;
+            /* <<< BỎ ALIGN-SELF >>> */
+            /* align-self: center; */
+        }
 
         .ampm {
-            font-size: 1.8rem;
+            font-family: 'Orbitron', sans-serif; /* Giữ lại Orbitron cho AM/PM */
+            font-size: clamp(0.9rem, 3vw, 1.1rem); /* Kích thước linh hoạt */
             font-weight: 500;
             color: #f1f1f1;
-            margin-left: 15px;
-            vertical-align: baseline;
+            margin-left: clamp(3px, 1.5vw, 5px); /* Khoảng cách linh hoạt */
             text-shadow: none;
+            opacity: 0.8;
+            /* <<< BỎ ALIGN-SELF VÀ MARGIN-BOTTOM >>> */
+            /* align-self: flex-end; */
+            /* margin-bottom: 5px; */
         }
+        /* --- Kết thúc Đồng hồ chính --- */
 
+        /* Ngày tháng */
         .date-display {
-            font-size: 1.6rem;
-            margin-top: 10px;
+            font-size: clamp(1rem, 3.5vw, 1.3rem); /* Kích thước linh hoạt */
+            margin-bottom: 25px;
             color: #bdc3c7;
-            min-height: 25px;
+            min-height: 20px;
             font-weight: 500;
+            word-wrap: break-word; /* Cho phép ngắt dòng nếu quá dài */
         }
 
-        /* Lớp tiện ích để ẩn phần tử */
+        /* Khu vực bấm giờ */
+        .stopwatch-section {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 25px;
+        }
+        #stopwatch-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: clamp(1.8rem, 7vw, 2.5rem); /* Kích thước linh hoạt */
+            color: #f0a500;
+            margin-bottom: 20px;
+            letter-spacing: 1px; /* Giảm letter-spacing */
+            font-weight: 600;
+            word-break: break-all; /* Ngăn tràn ngang */
+        }
+        .stopwatch-controls {
+            margin-bottom: 30px;
+            display: flex; /* Sử dụng flex cho nút */
+            flex-wrap: wrap; /* Cho phép xuống dòng */
+            justify-content: center; /* Căn giữa các nút */
+            gap: 10px; /* Khoảng cách giữa các nút */
+        }
+        .stopwatch-controls button {
+            background: linear-gradient(145deg, #888, #555);
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            /* margin: 5px; */ /* Bỏ margin vì đã có gap */
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex-grow: 0; /* Ngăn nút co giãn */
+            flex-shrink: 0;
+        }
+        .stopwatch-controls button#start-btn {
+             background: linear-gradient(145deg, #56ab2f, #a8e063);
+             color: #111;
+        }
+        .stopwatch-controls button#stop-btn {
+             background: linear-gradient(145deg, #e53935, #e35d5b);
+        }
+        .stopwatch-controls button#reset-btn {
+             background: linear-gradient(145deg, #888, #555);
+        }
+        .stopwatch-controls button#clear-history-btn {
+             background: linear-gradient(145deg, #4b6cb7, #182848);
+             font-size: 0.8rem;
+        }
+        .stopwatch-controls button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            filter: brightness(1.1);
+        }
+        .stopwatch-controls button:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stopwatch-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(50%);
+        }
+
+        /* --- Khu vực Lịch Sử Di chuyển --- */
+        .history-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .history-section h3 {
+            color: #66fcf1;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: left;
+        }
+        #travel-history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-height: 250px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        #travel-history-list li {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.5;
+            border-left: 4px solid #f0a500;
+        }
+         #travel-history-list li strong {
+            color: #fff;
+            min-width: 80px;
+            display: inline-block;
+        }
+        #travel-history-list li span {
+            font-family: 'Roboto Mono', monospace;
+            color: #f0a500;
+            word-break: break-word; /* Cho phép ngắt dòng giá trị dài */
+        }
+        /* --- Kết thúc Khu vực Lịch Sử --- */
+
+        /* --- Phân trang Lịch sử --- */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap; /* Cho phép xuống dòng */
+        }
+        .pagination-controls button {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .pagination-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #page-info {
+            font-size: 0.9rem;
+            color: #ccc;
+            white-space: nowrap; /* Ngăn thông tin trang bị ngắt dòng */
+        }
+        /* --- Kết thúc Phân trang --- */
+
         .hidden {
             display: none !important;
         }
@@ -110,79 +304,230 @@
 <body>
 
 <div class="clock-container">
-    <button id="format-toggle-btn">24h</button>
-
-    <div class="digital-clock">
-        <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
-        <span id="ampm" class="ampm"></span>
+    <div class="top-controls">
+        <button id="wake-lock-btn" title="Giữ màn hình sáng">Giữ sáng</button>
+        <button id="format-toggle-btn" title="Đổi định dạng 12/24 giờ">24h</button>
     </div>
-    <div class="date-display" id="date">
+
+    <div class="clock-frame">
+        <div class="digital-clock">
+            <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
+            <span id="ampm" class="ampm"></span>
         </div>
+    </div>
+    <div class="date-display" id="date"></div>
+
+    <div class="stopwatch-section">
+        <div id="stopwatch-display">00:00:00.000</div>
+        <div class="stopwatch-controls">
+            <button id="start-btn">Bắt đầu</button>
+            <button id="stop-btn" disabled>Kết thúc</button>
+            <button id="reset-btn" disabled>Reset</button>
+            <button id="clear-history-btn">Xóa Lịch Sử</button>
+        </div>
+    </div>
+
+    <div class="history-section">
+        <h3>Lịch sử Di chuyển</h3>
+        <ul id="travel-history-list">
+            </ul>
+        <div class="pagination-controls">
+            <button id="prev-page-btn" disabled>Trước</button>
+            <span id="page-info">Trang 1 / 1</span>
+            <button id="next-page-btn" disabled>Sau</button>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Lấy tham chiếu đến các phần tử HTML
+    // === Phần Đồng Hồ Chính ===
     const hoursElement = document.getElementById('hours');
     const minutesElement = document.getElementById('minutes');
     const secondsElement = document.getElementById('seconds');
     const ampmElement = document.getElementById('ampm');
     const dateElement = document.getElementById('date');
-    const formatToggleButton = document.getElementById('format-toggle-btn'); // ID của nút mới
+    const formatToggleButton = document.getElementById('format-toggle-btn');
+    let is24HourFormat = false;
 
-    // Biến trạng thái cho tùy chọn định dạng giờ
-    let is24HourFormat = false; // Mặc định là 12 giờ
-
-    // Hàm định dạng số (thêm số 0 nếu nhỏ hơn 10)
-    function formatNumber(num) {
-        return num < 10 ? '0' + num : num;
+    function formatNumber(num) { return num < 10 ? '0' + num : num; }
+    function formatTimeHHMMSS(date) {
+        const hours = formatNumber(date.getHours());
+        const minutes = formatNumber(date.getMinutes());
+        const seconds = formatNumber(date.getSeconds());
+        return `${hours}:${minutes}:${seconds}`;
     }
-
-    // Hàm cập nhật đồng hồ
     function updateClock() {
         const now = new Date();
         let hours = now.getHours();
-        const minutes = formatNumber(now.getMinutes());
-        const seconds = formatNumber(now.getSeconds());
-
-        // Xử lý định dạng 12/24 giờ và AM/PM
+        const minutes = formatNumber(now.getMinutes()); const seconds = formatNumber(now.getSeconds());
         if (!is24HourFormat) {
-            // Chế độ 12 giờ
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            ampmElement.textContent = ampm;
-            ampmElement.classList.remove('hidden');
-        } else {
-            // Chế độ 24 giờ
-            ampmElement.classList.add('hidden');
-        }
-
-        // Cập nhật hiển thị thời gian
-        hoursElement.textContent = formatNumber(hours);
-        minutesElement.textContent = minutes;
-        secondsElement.textContent = seconds;
-
-        // Luôn hiển thị ngày tháng
-        const day = formatNumber(now.getDate());
-        const month = formatNumber(now.getMonth() + 1);
-        const year = now.getFullYear();
+            const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
+            ampmElement.textContent = ampm; ampmElement.classList.remove('hidden');
+        } else { ampmElement.classList.add('hidden'); }
+        hoursElement.textContent = formatNumber(hours); minutesElement.textContent = minutes; secondsElement.textContent = seconds;
+        const day = formatNumber(now.getDate()); const month = formatNumber(now.getMonth() + 1); const year = now.getFullYear();
         const dayOfWeek = now.toLocaleDateString('vi-VN', { weekday: 'long' });
         dateElement.textContent = `${dayOfWeek}, ${day}/${month}/${year}`;
     }
-
-    // Xử lý sự kiện nút chuyển đổi định dạng 12/24 giờ
     formatToggleButton.addEventListener('click', () => {
         is24HourFormat = !is24HourFormat;
         formatToggleButton.textContent = is24HourFormat ? '12h' : '24h';
         updateClock();
     });
 
-    // ---- KHỞI CHẠY ĐỒNG HỒ ----
-    formatToggleButton.textContent = is24HourFormat ? '12h' : '24h';
-    updateClock();
-    setInterval(updateClock, 1000);
+    // === Phần Bấm Giờ và Lịch Sử ===
+    const stopwatchDisplay = document.getElementById('stopwatch-display');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const travelHistoryList = document.getElementById('travel-history-list');
+    // Phân trang
+    const prevPageBtn = document.getElementById('prev-page-btn');
+    const nextPageBtn = document.getElementById('next-page-btn');
+    const pageInfo = document.getElementById('page-info');
+
+    let stopwatchInterval = null;
+    let startTime = 0;
+    let elapsedTime = 0;
+    let isRunning = false;
+    let stopwatchStartDate = null;
+    let travelHistory = [];
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    function formatStopwatchTime(time) {
+        const date = new Date(time);
+        const hours = formatNumber(date.getUTCHours()); const minutes = formatNumber(date.getUTCMinutes());
+        const seconds = formatNumber(date.getUTCSeconds()); const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+    }
+
+    function displayHistory() {
+        travelHistoryList.innerHTML = '';
+        clearHistoryBtn.disabled = travelHistory.length === 0;
+
+        if (travelHistory.length === 0) {
+            pageInfo.textContent = 'Không có lịch sử';
+            prevPageBtn.disabled = true; nextPageBtn.disabled = true; return;
+        }
+
+        const totalItems = travelHistory.length; const totalPages = Math.ceil(totalItems / itemsPerPage);
+        if (currentPage < 1) currentPage = 1; if (currentPage > totalPages) currentPage = totalPages;
+        const startIndex = (currentPage - 1) * itemsPerPage; const endIndex = startIndex + itemsPerPage;
+        const itemsToShow = travelHistory.slice().reverse().slice(startIndex, endIndex);
+
+        itemsToShow.forEach(entry => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>Ngày:</strong> <span>${entry.startDateStr}</span><br>
+                <strong>Bắt đầu:</strong> <span>${entry.startTimeStr}</span><br>
+                <strong>Kết thúc:</strong> <span>${entry.endTimeStr}</span><br>
+                <strong>Thời gian:</strong> <span>${entry.finalDurationStr}</span><br>
+                <strong>(Tương đương):</strong> <span>${entry.durationMinutesStr}</span>
+            `;
+            travelHistoryList.appendChild(li);
+        });
+
+        pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+        prevPageBtn.disabled = currentPage === 1; nextPageBtn.disabled = currentPage === totalPages;
+    }
+
+    function loadHistory() {
+        const savedHistory = localStorage.getItem('travelHistory');
+        travelHistory = savedHistory ? JSON.parse(savedHistory) : [];
+        currentPage = 1; displayHistory();
+    }
+    function saveHistory() { localStorage.setItem('travelHistory', JSON.stringify(travelHistory)); }
+    function updateStopwatchDisplay() {
+        const currentTime = Date.now();
+        const currentElapsedTime = currentTime - startTime + elapsedTime;
+        stopwatchDisplay.textContent = formatStopwatchTime(currentElapsedTime);
+    }
+    function startStopwatch() {
+        if (isRunning) return; isRunning = true;
+        if (elapsedTime === 0) { stopwatchStartDate = new Date(); }
+        startTime = Date.now();
+        stopwatchInterval = setInterval(updateStopwatchDisplay, 10);
+        startBtn.disabled = true; stopBtn.disabled = false; resetBtn.disabled = false;
+    }
+    function stopStopwatch() {
+        if (!isRunning) return; isRunning = false; clearInterval(stopwatchInterval);
+        elapsedTime += Date.now() - startTime; const finalDurationStr = formatStopwatchTime(elapsedTime);
+        stopwatchDisplay.textContent = finalDurationStr;
+
+        if (!stopwatchStartDate) {
+             console.error("Lỗi: stopwatchStartDate không được thiết lập khi dừng.");
+             resetStopwatch(); return;
+        }
+
+        const endTime = new Date(); const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
+        const startTimeStr = formatTimeHHMMSS(stopwatchStartDate); const endTimeStr = formatTimeHHMMSS(endTime);
+        const totalSecondsRaw = Math.floor(elapsedTime / 1000); const totalMinutes = Math.floor(totalSecondsRaw / 60);
+        const remainingSeconds = totalSecondsRaw % 60; const durationMinutesStr = `${totalMinutes} phút ${remainingSeconds} giây`;
+        const newEntry = { id: Date.now(), startDateStr, startTimeStr, endTimeStr, finalDurationStr, durationMinutesStr };
+
+        travelHistory.push(newEntry); saveHistory(); currentPage = 1; displayHistory();
+        startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = false;
+    }
+    function resetStopwatch() {
+        if (isRunning) { clearInterval(stopwatchInterval); }
+        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null;
+        stopwatchDisplay.textContent = formatStopwatchTime(0);
+        startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = true;
+    }
+    function clearTravelHistory() {
+        travelHistory = []; saveHistory(); currentPage = 1; displayHistory();
+    }
+    prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; displayHistory(); } });
+    nextPageBtn.addEventListener('click', () => { const totalPages = Math.ceil(travelHistory.length / itemsPerPage); if (currentPage < totalPages) { currentPage++; displayHistory(); } });
+    startBtn.addEventListener('click', startStopwatch);
+    stopBtn.addEventListener('click', stopStopwatch);
+    resetBtn.addEventListener('click', resetStopwatch);
+    clearHistoryBtn.addEventListener('click', clearTravelHistory);
+
+    // === Phần Giữ Màn Hình Sáng (Screen Wake Lock API) ===
+    const wakeLockBtn = document.getElementById('wake-lock-btn');
+    let wakeLock = null;
+
+    async function toggleWakeLock() {
+        if (!('wakeLock' in navigator)) { alert('Trình duyệt này không hỗ trợ tính năng Giữ màn hình sáng.'); wakeLockBtn.disabled = true; return; }
+        try {
+            if (wakeLock) { await wakeLock.release(); }
+            else {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng';
+                wakeLock.addEventListener('release', () => {
+                    console.log('Wake Lock đã được thả.'); wakeLockBtn.classList.remove('active');
+                    wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null;
+                });
+            }
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`); alert(`Lỗi khi ${wakeLock ? 'thả' : 'yêu cầu'} Wake Lock: ${err.message}`);
+            if (wakeLock && !wakeLock.released) { wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng'; }
+            else { wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; }
+        }
+    }
+    if (!('wakeLock' in navigator)) { wakeLockBtn.disabled = true; wakeLockBtn.title = 'Trình duyệt không hỗ trợ tính năng này'; }
+    else {
+        wakeLockBtn.addEventListener('click', toggleWakeLock);
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen'); wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng';
+                    wakeLock.addEventListener('release', () => { console.log('Wake Lock đã được thả (sau khi hiển thị lại).'); wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; });
+                    console.log('Wake Lock đã được yêu cầu lại thành công.');
+                } catch (err) { console.error(`Không thể yêu cầu lại Wake Lock: ${err.name}, ${err.message}`); wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; }
+            }
+        });
+    }
+
+    // ---- KHỞI CHẠY ----
+    updateClock(); setInterval(updateClock, 1000);
+    loadHistory(); resetStopwatch();
 
 </script>
 
 </body>
 </html>
+
