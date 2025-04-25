@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Cập nhật kích thước)</title>
+    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Khung Đồng Hồ)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -72,13 +72,22 @@
          }
 
 
-        /* Đồng hồ chính */
+        /* --- Đồng hồ chính - Phần được làm nổi bật --- */
+        .clock-frame { /* Khung bao quanh đồng hồ chính */
+            border: 2px solid rgba(102, 252, 241, 0.3); /* Viền màu cyan mờ */
+            border-radius: 15px; /* Bo góc khung */
+            padding: 20px 10px 15px 10px; /* Padding bên trong khung */
+            margin-bottom: 25px; /* Khoảng cách dưới khung */
+            background-color: rgba(0, 0, 0, 0.1); /* Nền tối nhẹ bên trong khung */
+            box-shadow: inset 0 0 15px rgba(102, 252, 241, 0.15); /* Đổ bóng vào trong */
+        }
+
         .digital-clock {
             font-weight: 700;
-            margin-bottom: 10px;
-            min-height: 85px; /* Tăng min-height để chứa font lớn hơn */
-            letter-spacing: 2px; /* Giảm letter-spacing chút */
-            text-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
+            /* margin-bottom đã chuyển ra .clock-frame */
+            min-height: auto; /* Bỏ min-height ở đây */
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.6); /* Tăng nhẹ shadow */
             display: flex;
             justify-content: center;
             align-items: baseline;
@@ -89,42 +98,48 @@
             display: inline-block;
         }
         #hours {
-            font-size: 5rem; /* <<< TĂNG KÍCH THƯỚC GIỜ >>> */
+            font-size: 5.5rem; /* <<< TĂNG GIỜ LỚN HƠN >>> */
             color: #66fcf1;
-            min-width: 110px; /* Tăng min-width */
+            min-width: 120px; /* Tăng min-width */
         }
         #minutes {
-            font-size: 5rem; /* <<< TĂNG KÍCH THƯỚC PHÚT >>> */
+            font-size: 5.5rem; /* <<< TĂNG PHÚT LỚN HƠN >>> */
             color: #a7ff83;
-            min-width: 110px; /* Tăng min-width */
+            min-width: 120px; /* Tăng min-width */
         }
         #seconds {
-            font-size: 2.2rem; /* <<< GIẢM KÍCH THƯỚC GIÂY >>> */
+            font-size: 2rem; /* <<< GIẢM GIÂY NHỎ HƠN NỮA >>> */
             color: #f7797d;
-            min-width: 50px; /* Giảm min-width */
-            opacity: 0.8; /* Làm mờ giây đi một chút */
+            min-width: 45px; /* Giảm min-width */
+            opacity: 0.7; /* Mờ hơn nữa */
+            align-self: flex-end; /* Căn giây xuống dưới một chút */
+            margin-bottom: 5px; /* Khoảng cách dưới cho giây */
         }
         .colon {
-            font-size: 4rem; /* Điều chỉnh kích thước dấu hai chấm */
+            font-size: 4.5rem; /* Tăng kích thước dấu hai chấm */
             color: #e0e0e0;
-            margin: 0 -4px; /* Điều chỉnh khoảng cách */
-            opacity: 0.8;
+            margin: 0 -5px; /* Điều chỉnh khoảng cách */
+            opacity: 0.7;
+             align-self: center; /* Căn giữa dấu hai chấm */
         }
 
         .ampm {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem; /* <<< GIẢM KÍCH THƯỚC AM/PM >>> */
+            font-size: 1.1rem; /* <<< GIẢM AM/PM NHỎ HƠN >>> */
             font-weight: 500;
             color: #f1f1f1;
-            margin-left: 8px; /* <<< GIẢM KHOẢNG CÁCH AM/PM >>> */
+            margin-left: 5px; /* <<< GIẢM KHOẢNG CÁCH AM/PM >>> */
             text-shadow: none;
-            opacity: 0.9;
+            opacity: 0.8;
+            align-self: flex-end; /* Căn xuống dưới cùng giây */
+            margin-bottom: 5px; /* Khoảng cách dưới */
         }
+        /* --- Kết thúc Đồng hồ chính --- */
 
         /* Ngày tháng */
         .date-display {
             font-size: 1.3rem;
-            margin-top: 5px;
+            /* margin-top đã bị loại bỏ vì có khung đồng hồ */
             margin-bottom: 25px;
             color: #bdc3c7;
             min-height: 20px;
@@ -278,9 +293,11 @@
         <button id="format-toggle-btn" title="Đổi định dạng 12/24 giờ">24h</button>
     </div>
 
-    <div class="digital-clock">
-        <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
-        <span id="ampm" class="ampm"></span>
+    <div class="clock-frame">
+        <div class="digital-clock">
+            <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
+            <span id="ampm" class="ampm"></span>
+        </div>
     </div>
     <div class="date-display" id="date"></div>
 
@@ -423,6 +440,14 @@
         elapsedTime += Date.now() - startTime; const finalDurationStr = formatStopwatchTime(elapsedTime);
         stopwatchDisplay.textContent = finalDurationStr;
 
+        // Kiểm tra xem stopwatchStartDate có tồn tại không trước khi sử dụng
+        if (!stopwatchStartDate) {
+             console.error("Lỗi: stopwatchStartDate không được thiết lập khi dừng.");
+             // Có thể đặt lại đồng hồ hoặc hiển thị lỗi
+             resetStopwatch(); // Reset lại trạng thái
+             return; // Dừng thực thi hàm stopStopwatch
+        }
+
         const endTime = new Date(); const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
         const startTimeStr = formatTimeHHMMSS(stopwatchStartDate); const endTimeStr = formatTimeHHMMSS(endTime);
         const totalSecondsRaw = Math.floor(elapsedTime / 1000); const totalMinutes = Math.floor(totalSecondsRaw / 60);
@@ -434,7 +459,7 @@
     }
     function resetStopwatch() {
         if (isRunning) { clearInterval(stopwatchInterval); }
-        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null;
+        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null; // Đảm bảo reset stopwatchStartDate
         stopwatchDisplay.textContent = formatStopwatchTime(0);
         startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = true;
     }
