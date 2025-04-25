@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Cố định số)</title> <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Cập nhật kích thước)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400..700&display=swap" rel="stylesheet">
@@ -14,7 +15,7 @@
             align-items: flex-start;
             min-height: 100vh;
             background: linear-gradient(135deg, #1f263e, #3c1a4f);
-            font-family: 'Orbitron', sans-serif; /* Font mặc định cho các phần tử khác */
+            font-family: 'Orbitron', sans-serif;
             color: #e0e0e0;
             margin: 0;
             overflow: auto;
@@ -50,7 +51,7 @@
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-family: 'Orbitron', sans-serif; /* Nút vẫn dùng Orbitron */
+            font-family: 'Orbitron', sans-serif;
             font-size: 0.8rem;
             font-weight: 500;
             transition: background-color 0.3s ease, border-color 0.3s ease;
@@ -73,54 +74,51 @@
 
         /* Đồng hồ chính */
         .digital-clock {
-            /* Không cần đặt font-size ở đây nữa vì sẽ đặt cho từng phần tử */
             font-weight: 700;
             margin-bottom: 10px;
-            min-height: 70px; /* Giữ lại min-height */
-            letter-spacing: 4px; /* Giữ lại letter-spacing */
+            min-height: 85px; /* Tăng min-height để chứa font lớn hơn */
+            letter-spacing: 2px; /* Giảm letter-spacing chút */
             text-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
-            /* Căn chỉnh baseline cho các span bên trong */
-            display: flex; /* Sử dụng flexbox để căn chỉnh tốt hơn */
-            justify-content: center; /* Căn giữa khối đồng hồ */
-            align-items: baseline; /* Căn các phần tử theo đường cơ sở */
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
         }
-        /* Áp dụng font monospace và kích thước cho giờ, phút, giây */
+        /* Áp dụng font monospace và kích thước */
         #hours, #minutes, #seconds, .colon {
-            font-family: 'Roboto Mono', monospace; /* <<< FONT MONOSPACE >>> */
-            display: inline-block; /* Cần thiết */
+            font-family: 'Roboto Mono', monospace;
+            display: inline-block;
         }
         #hours {
-            font-size: 4rem; /* Kích thước giờ */
+            font-size: 5rem; /* <<< TĂNG KÍCH THƯỚC GIỜ >>> */
             color: #66fcf1;
-            min-width: 90px; /* Điều chỉnh min-width nếu cần cho font mới */
+            min-width: 110px; /* Tăng min-width */
         }
         #minutes {
-            font-size: 4rem; /* Kích thước phút */
+            font-size: 5rem; /* <<< TĂNG KÍCH THƯỚC PHÚT >>> */
             color: #a7ff83;
-            min-width: 90px; /* Điều chỉnh min-width */
+            min-width: 110px; /* Tăng min-width */
         }
         #seconds {
-            font-size: 2.8rem; /* Kích thước giây nhỏ hơn */
+            font-size: 2.2rem; /* <<< GIẢM KÍCH THƯỚC GIÂY >>> */
             color: #f7797d;
-            min-width: 60px; /* Điều chỉnh min-width */
-            /* vertical-align: baseline; */ /* Không cần nữa vì dùng flex align-items */
+            min-width: 50px; /* Giảm min-width */
+            opacity: 0.8; /* Làm mờ giây đi một chút */
         }
-        /* Định dạng dấu hai chấm */
         .colon {
-            font-size: 3.5rem; /* Kích thước dấu hai chấm */
-            color: #e0e0e0; /* Màu dấu hai chấm */
-            margin: 0 -2px; /* Điều chỉnh khoảng cách nếu cần */
-            /* vertical-align: baseline; */
+            font-size: 4rem; /* Điều chỉnh kích thước dấu hai chấm */
+            color: #e0e0e0;
+            margin: 0 -4px; /* Điều chỉnh khoảng cách */
+            opacity: 0.8;
         }
 
         .ampm {
-            font-family: 'Orbitron', sans-serif; /* AM/PM vẫn dùng Orbitron */
-            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem; /* <<< GIẢM KÍCH THƯỚC AM/PM >>> */
             font-weight: 500;
             color: #f1f1f1;
-            margin-left: 10px;
-            /* vertical-align: baseline; */
+            margin-left: 8px; /* <<< GIẢM KHOẢNG CÁCH AM/PM >>> */
             text-shadow: none;
+            opacity: 0.9;
         }
 
         /* Ngày tháng */
