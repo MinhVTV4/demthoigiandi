@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Khung Đồng Hồ)</title>
+    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Căn chỉnh và Responsive)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
             position: relative;
             text-align: center;
             background-color: rgba(10, 10, 20, 0.7);
-            padding: 40px 50px 50px 50px;
+            padding: 40px 5%; /* Sử dụng % cho padding ngang */
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -41,6 +41,8 @@
             top: 15px;
             right: 15px;
             display: flex;
+            flex-wrap: wrap; /* Cho phép xuống dòng nếu không đủ chỗ */
+            justify-content: flex-end; /* Căn phải */
             gap: 10px;
             z-index: 10;
         }
@@ -73,77 +75,81 @@
 
 
         /* --- Đồng hồ chính - Phần được làm nổi bật --- */
-        .clock-frame { /* Khung bao quanh đồng hồ chính */
-            border: 2px solid rgba(102, 252, 241, 0.3); /* Viền màu cyan mờ */
-            border-radius: 15px; /* Bo góc khung */
-            padding: 20px 10px 15px 10px; /* Padding bên trong khung */
-            margin-bottom: 25px; /* Khoảng cách dưới khung */
-            background-color: rgba(0, 0, 0, 0.1); /* Nền tối nhẹ bên trong khung */
-            box-shadow: inset 0 0 15px rgba(102, 252, 241, 0.15); /* Đổ bóng vào trong */
+        .clock-frame {
+            border: 2px solid rgba(102, 252, 241, 0.3);
+            border-radius: 15px;
+            padding: 20px 5% 15px 5%; /* Sử dụng % cho padding ngang */
+            margin-bottom: 25px;
+            background-color: rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 0 15px rgba(102, 252, 241, 0.15);
         }
 
         .digital-clock {
             font-weight: 700;
-            /* margin-bottom đã chuyển ra .clock-frame */
-            min-height: auto; /* Bỏ min-height ở đây */
+            min-height: auto;
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(102, 252, 241, 0.6); /* Tăng nhẹ shadow */
+            text-shadow: 0 0 10px rgba(102, 252, 241, 0.6);
             display: flex;
             justify-content: center;
-            align-items: baseline;
+            /* <<< THAY ĐỔI ALIGNMENT ĐỂ CĂN GIỮA >>> */
+            align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+            flex-wrap: wrap; /* Cho phép xuống dòng nếu màn hình quá hẹp */
         }
         /* Áp dụng font monospace và kích thước */
-        #hours, #minutes, #seconds, .colon {
+        #hours, #minutes, #seconds, .colon, .ampm {
             font-family: 'Roboto Mono', monospace;
-            display: inline-block;
+            display: inline-block; /* Giữ inline-block để các phần tử liền nhau */
+            white-space: nowrap; /* Ngăn không cho số bị ngắt dòng */
         }
         #hours {
-            font-size: 5.5rem; /* <<< TĂNG GIỜ LỚN HƠN >>> */
+            font-size: clamp(3.5rem, 12vw, 5.5rem); /* Kích thước linh hoạt */
             color: #66fcf1;
-            min-width: 120px; /* Tăng min-width */
+            /* min-width không còn quá cần thiết với flex */
         }
         #minutes {
-            font-size: 5.5rem; /* <<< TĂNG PHÚT LỚN HƠN >>> */
+            font-size: clamp(3.5rem, 12vw, 5.5rem); /* Kích thước linh hoạt */
             color: #a7ff83;
-            min-width: 120px; /* Tăng min-width */
         }
         #seconds {
-            font-size: 2rem; /* <<< GIẢM GIÂY NHỎ HƠN NỮA >>> */
+            font-size: clamp(1.5rem, 6vw, 2rem); /* Kích thước linh hoạt */
             color: #f7797d;
-            min-width: 45px; /* Giảm min-width */
-            opacity: 0.7; /* Mờ hơn nữa */
-            align-self: flex-end; /* Căn giây xuống dưới một chút */
-            margin-bottom: 5px; /* Khoảng cách dưới cho giây */
+            opacity: 0.7;
+            /* <<< BỎ ALIGN-SELF VÀ MARGIN-BOTTOM >>> */
+            /* align-self: flex-end; */
+            /* margin-bottom: 5px; */
+            margin-left: -2px; /* Giảm khoảng cách với dấu hai chấm */
         }
         .colon {
-            font-size: 4.5rem; /* Tăng kích thước dấu hai chấm */
+            font-size: clamp(3rem, 10vw, 4.5rem); /* Kích thước linh hoạt */
             color: #e0e0e0;
-            margin: 0 -5px; /* Điều chỉnh khoảng cách */
+            margin: 0 clamp(-5px, -1vw, -2px); /* Khoảng cách linh hoạt */
             opacity: 0.7;
-             align-self: center; /* Căn giữa dấu hai chấm */
+            /* <<< BỎ ALIGN-SELF >>> */
+            /* align-self: center; */
         }
 
         .ampm {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem; /* <<< GIẢM AM/PM NHỎ HƠN >>> */
+            font-family: 'Orbitron', sans-serif; /* Giữ lại Orbitron cho AM/PM */
+            font-size: clamp(0.9rem, 3vw, 1.1rem); /* Kích thước linh hoạt */
             font-weight: 500;
             color: #f1f1f1;
-            margin-left: 5px; /* <<< GIẢM KHOẢNG CÁCH AM/PM >>> */
+            margin-left: clamp(3px, 1.5vw, 5px); /* Khoảng cách linh hoạt */
             text-shadow: none;
             opacity: 0.8;
-            align-self: flex-end; /* Căn xuống dưới cùng giây */
-            margin-bottom: 5px; /* Khoảng cách dưới */
+            /* <<< BỎ ALIGN-SELF VÀ MARGIN-BOTTOM >>> */
+            /* align-self: flex-end; */
+            /* margin-bottom: 5px; */
         }
         /* --- Kết thúc Đồng hồ chính --- */
 
         /* Ngày tháng */
         .date-display {
-            font-size: 1.3rem;
-            /* margin-top đã bị loại bỏ vì có khung đồng hồ */
+            font-size: clamp(1rem, 3.5vw, 1.3rem); /* Kích thước linh hoạt */
             margin-bottom: 25px;
             color: #bdc3c7;
             min-height: 20px;
             font-weight: 500;
+            word-wrap: break-word; /* Cho phép ngắt dòng nếu quá dài */
         }
 
         /* Khu vực bấm giờ */
@@ -154,21 +160,26 @@
         }
         #stopwatch-display {
             font-family: 'Roboto Mono', monospace;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 7vw, 2.5rem); /* Kích thước linh hoạt */
             color: #f0a500;
             margin-bottom: 20px;
-            letter-spacing: 2px;
+            letter-spacing: 1px; /* Giảm letter-spacing */
             font-weight: 600;
+            word-break: break-all; /* Ngăn tràn ngang */
         }
         .stopwatch-controls {
             margin-bottom: 30px;
+            display: flex; /* Sử dụng flex cho nút */
+            flex-wrap: wrap; /* Cho phép xuống dòng */
+            justify-content: center; /* Căn giữa các nút */
+            gap: 10px; /* Khoảng cách giữa các nút */
         }
         .stopwatch-controls button {
             background: linear-gradient(145deg, #888, #555);
             border: none;
             color: #fff;
             padding: 10px 20px;
-            margin: 5px;
+            /* margin: 5px; */ /* Bỏ margin vì đã có gap */
             border-radius: 8px;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
@@ -176,6 +187,8 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex-grow: 0; /* Ngăn nút co giãn */
+            flex-shrink: 0;
         }
         .stopwatch-controls button#start-btn {
              background: linear-gradient(145deg, #56ab2f, #a8e063);
@@ -244,6 +257,7 @@
         #travel-history-list li span {
             font-family: 'Roboto Mono', monospace;
             color: #f0a500;
+            word-break: break-word; /* Cho phép ngắt dòng giá trị dài */
         }
         /* --- Kết thúc Khu vực Lịch Sử --- */
 
@@ -254,6 +268,7 @@
             align-items: center;
             gap: 15px;
             margin-top: 10px;
+            flex-wrap: wrap; /* Cho phép xuống dòng */
         }
         .pagination-controls button {
             background-color: rgba(255, 255, 255, 0.15);
@@ -277,6 +292,7 @@
         #page-info {
             font-size: 0.9rem;
             color: #ccc;
+            white-space: nowrap; /* Ngăn thông tin trang bị ngắt dòng */
         }
         /* --- Kết thúc Phân trang --- */
 
@@ -440,12 +456,9 @@
         elapsedTime += Date.now() - startTime; const finalDurationStr = formatStopwatchTime(elapsedTime);
         stopwatchDisplay.textContent = finalDurationStr;
 
-        // Kiểm tra xem stopwatchStartDate có tồn tại không trước khi sử dụng
         if (!stopwatchStartDate) {
              console.error("Lỗi: stopwatchStartDate không được thiết lập khi dừng.");
-             // Có thể đặt lại đồng hồ hoặc hiển thị lỗi
-             resetStopwatch(); // Reset lại trạng thái
-             return; // Dừng thực thi hàm stopStopwatch
+             resetStopwatch(); return;
         }
 
         const endTime = new Date(); const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
@@ -459,12 +472,11 @@
     }
     function resetStopwatch() {
         if (isRunning) { clearInterval(stopwatchInterval); }
-        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null; // Đảm bảo reset stopwatchStartDate
+        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null;
         stopwatchDisplay.textContent = formatStopwatchTime(0);
         startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = true;
     }
     function clearTravelHistory() {
-        // if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử di chuyển?")) return;
         travelHistory = []; saveHistory(); currentPage = 1; displayHistory();
     }
     prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; displayHistory(); } });
