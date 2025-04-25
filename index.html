@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web với Thống Kê Di Chuyển</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Đồng Hồ Web với Lịch Sử và Giữ Sáng (Cố định số)</title> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400..700&display=swap" rel="stylesheet">
@@ -12,77 +11,115 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             background: linear-gradient(135deg, #1f263e, #3c1a4f);
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Orbitron', sans-serif; /* Font mặc định cho các phần tử khác */
             color: #e0e0e0;
             margin: 0;
-            /* Cho phép cuộn nếu nội dung dài ra */
             overflow: auto;
-            padding: 20px 0; /* Thêm padding trên dưới cho body */
+            padding: 30px 0;
         }
 
         .clock-container {
             position: relative;
             text-align: center;
             background-color: rgba(10, 10, 20, 0.7);
-            /* Tăng padding dưới để có chỗ cho thống kê */
             padding: 40px 50px 50px 50px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(5px);
             width: 90%;
-            max-width: 600px;
-            /* Bỏ z-index vì không còn modal */
+            max-width: 700px;
         }
 
-        /* Nút chuyển đổi 12h/24h */
-        #format-toggle-btn {
+        /* Nút chuyển đổi 12h/24h và Giữ sáng */
+        .top-controls {
             position: absolute;
             top: 15px;
             right: 15px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        .top-controls button {
             background-color: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: #e0e0e0;
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
+            font-family: 'Orbitron', sans-serif; /* Nút vẫn dùng Orbitron */
             font-size: 0.8rem;
             font-weight: 500;
             transition: background-color 0.3s ease, border-color 0.3s ease;
-            z-index: 10;
         }
-        #format-toggle-btn:hover {
+        .top-controls button:hover {
             background-color: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.5);
         }
+        #wake-lock-btn.active {
+            background-color: #f0a500;
+            color: #111;
+            border-color: #f0a500;
+        }
+         #wake-lock-btn:disabled {
+             opacity: 0.5;
+             cursor: not-allowed;
+             filter: grayscale(80%);
+         }
+
 
         /* Đồng hồ chính */
         .digital-clock {
-            font-size: 4rem;
+            /* Không cần đặt font-size ở đây nữa vì sẽ đặt cho từng phần tử */
             font-weight: 700;
             margin-bottom: 10px;
-            min-height: 70px;
-            letter-spacing: 4px;
+            min-height: 70px; /* Giữ lại min-height */
+            letter-spacing: 4px; /* Giữ lại letter-spacing */
             text-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
+            /* Căn chỉnh baseline cho các span bên trong */
+            display: flex; /* Sử dụng flexbox để căn chỉnh tốt hơn */
+            justify-content: center; /* Căn giữa khối đồng hồ */
+            align-items: baseline; /* Căn các phần tử theo đường cơ sở */
         }
-        #hours { color: #66fcf1; min-width: 65px; display: inline-block; }
-        #minutes { color: #a7ff83; min-width: 65px; display: inline-block; }
+        /* Áp dụng font monospace và kích thước cho giờ, phút, giây */
+        #hours, #minutes, #seconds, .colon {
+            font-family: 'Roboto Mono', monospace; /* <<< FONT MONOSPACE >>> */
+            display: inline-block; /* Cần thiết */
+        }
+        #hours {
+            font-size: 4rem; /* Kích thước giờ */
+            color: #66fcf1;
+            min-width: 90px; /* Điều chỉnh min-width nếu cần cho font mới */
+        }
+        #minutes {
+            font-size: 4rem; /* Kích thước phút */
+            color: #a7ff83;
+            min-width: 90px; /* Điều chỉnh min-width */
+        }
         #seconds {
+            font-size: 2.8rem; /* Kích thước giây nhỏ hơn */
             color: #f7797d;
-            font-size: 2.8rem;
-            vertical-align: baseline;
-            min-width: 50px;
-            display: inline-block;
+            min-width: 60px; /* Điều chỉnh min-width */
+            /* vertical-align: baseline; */ /* Không cần nữa vì dùng flex align-items */
         }
+        /* Định dạng dấu hai chấm */
+        .colon {
+            font-size: 3.5rem; /* Kích thước dấu hai chấm */
+            color: #e0e0e0; /* Màu dấu hai chấm */
+            margin: 0 -2px; /* Điều chỉnh khoảng cách nếu cần */
+            /* vertical-align: baseline; */
+        }
+
         .ampm {
+            font-family: 'Orbitron', sans-serif; /* AM/PM vẫn dùng Orbitron */
             font-size: 1.5rem;
             font-weight: 500;
             color: #f1f1f1;
             margin-left: 10px;
-            vertical-align: baseline;
+            /* vertical-align: baseline; */
             text-shadow: none;
         }
 
@@ -110,16 +147,19 @@
             letter-spacing: 2px;
             font-weight: 600;
         }
+        .stopwatch-controls {
+            margin-bottom: 30px;
+        }
         .stopwatch-controls button {
             background: linear-gradient(145deg, #888, #555);
             border: none;
             color: #fff;
-            padding: 10px 20px; /* Giảm padding ngang chút */
-            margin: 0 5px; /* Giảm margin ngang chút */
+            padding: 10px 20px;
+            margin: 5px;
             border-radius: 8px;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem; /* Giảm font size nút chút */
+            font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -131,11 +171,13 @@
         .stopwatch-controls button#stop-btn {
              background: linear-gradient(145deg, #e53935, #e35d5b);
         }
-        /* Nút Reset có màu xám */
         .stopwatch-controls button#reset-btn {
              background: linear-gradient(145deg, #888, #555);
         }
-
+        .stopwatch-controls button#clear-history-btn {
+             background: linear-gradient(145deg, #4b6cb7, #182848);
+             font-size: 0.8rem;
+        }
         .stopwatch-controls button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
@@ -151,29 +193,79 @@
             filter: grayscale(50%);
         }
 
-        /* --- Khu vực Thống kê Di chuyển --- */
-        #travel-stats {
-            margin-top: 30px; /* Khoảng cách từ nút bấm giờ */
+        /* --- Khu vực Lịch Sử Di chuyển --- */
+        .history-section {
+            margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
-            text-align: left; /* Căn lề trái cho dễ đọc */
-            font-size: 0.95rem; /* Kích thước chữ thống kê */
-            color: #ccc; /* Màu chữ nhạt hơn chút */
-            line-height: 1.6; /* Giãn dòng */
         }
-        #travel-stats p {
-            margin: 5px 0; /* Khoảng cách giữa các dòng thông tin */
+        .history-section h3 {
+            color: #66fcf1;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: left;
         }
-        #travel-stats strong {
-            color: #fff; /* Màu chữ đậm hơn cho nhãn */
-            min-width: 100px; /* Đảm bảo các nhãn thẳng hàng */
+        #travel-history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-height: 250px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        #travel-history-list li {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #ccc;
+            line-height: 1.5;
+            border-left: 4px solid #f0a500;
+        }
+         #travel-history-list li strong {
+            color: #fff;
+            min-width: 80px;
             display: inline-block;
         }
-        #travel-stats span {
-            font-family: 'Roboto Mono', monospace; /* Dùng monospace cho giá trị */
-            color: #f0a500; /* Màu vàng cam cho giá trị */
+        #travel-history-list li span {
+            font-family: 'Roboto Mono', monospace;
+            color: #f0a500;
         }
-        /* --- Kết thúc Khu vực Thống kê --- */
+        /* --- Kết thúc Khu vực Lịch Sử --- */
+
+        /* --- Phân trang Lịch sử --- */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .pagination-controls button {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #e0e0e0;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .pagination-controls button:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .pagination-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        #page-info {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        /* --- Kết thúc Phân trang --- */
 
         .hidden {
             display: none !important;
@@ -183,10 +275,13 @@
 <body>
 
 <div class="clock-container">
-    <button id="format-toggle-btn">24h</button>
+    <div class="top-controls">
+        <button id="wake-lock-btn" title="Giữ màn hình sáng">Giữ sáng</button>
+        <button id="format-toggle-btn" title="Đổi định dạng 12/24 giờ">24h</button>
+    </div>
 
     <div class="digital-clock">
-        <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+        <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span><span class="colon">:</span><span id="seconds">00</span>
         <span id="ampm" class="ampm"></span>
     </div>
     <div class="date-display" id="date"></div>
@@ -196,9 +291,20 @@
         <div class="stopwatch-controls">
             <button id="start-btn">Bắt đầu</button>
             <button id="stop-btn" disabled>Kết thúc</button>
-            <button id="reset-btn" disabled>Reset</button> </div>
-        <div id="travel-stats">
-            </div>
+            <button id="reset-btn" disabled>Reset</button>
+            <button id="clear-history-btn">Xóa Lịch Sử</button>
+        </div>
+    </div>
+
+    <div class="history-section">
+        <h3>Lịch sử Di chuyển</h3>
+        <ul id="travel-history-list">
+            </ul>
+        <div class="pagination-controls">
+            <button id="prev-page-btn" disabled>Trước</button>
+            <span id="page-info">Trang 1 / 1</span>
+            <button id="next-page-btn" disabled>Sau</button>
+        </div>
     </div>
 </div>
 
@@ -212,165 +318,178 @@
     const formatToggleButton = document.getElementById('format-toggle-btn');
     let is24HourFormat = false;
 
-    function formatNumber(num) {
-        return num < 10 ? '0' + num : num;
-    }
-
-    // Hàm định dạng thời gian HH:MM:SS
+    function formatNumber(num) { return num < 10 ? '0' + num : num; }
     function formatTimeHHMMSS(date) {
         const hours = formatNumber(date.getHours());
         const minutes = formatNumber(date.getMinutes());
         const seconds = formatNumber(date.getSeconds());
         return `${hours}:${minutes}:${seconds}`;
     }
-
     function updateClock() {
         const now = new Date();
         let hours = now.getHours();
-        const minutes = formatNumber(now.getMinutes());
-        const seconds = formatNumber(now.getSeconds());
-
+        const minutes = formatNumber(now.getMinutes()); const seconds = formatNumber(now.getSeconds());
         if (!is24HourFormat) {
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            ampmElement.textContent = ampm;
-            ampmElement.classList.remove('hidden');
-        } else {
-            ampmElement.classList.add('hidden');
-        }
-
-        hoursElement.textContent = formatNumber(hours);
-        minutesElement.textContent = minutes;
-        secondsElement.textContent = seconds;
-
-        const day = formatNumber(now.getDate());
-        const month = formatNumber(now.getMonth() + 1);
-        const year = now.getFullYear();
+            const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
+            ampmElement.textContent = ampm; ampmElement.classList.remove('hidden');
+        } else { ampmElement.classList.add('hidden'); }
+        hoursElement.textContent = formatNumber(hours); minutesElement.textContent = minutes; secondsElement.textContent = seconds;
+        const day = formatNumber(now.getDate()); const month = formatNumber(now.getMonth() + 1); const year = now.getFullYear();
         const dayOfWeek = now.toLocaleDateString('vi-VN', { weekday: 'long' });
         dateElement.textContent = `${dayOfWeek}, ${day}/${month}/${year}`;
     }
-
     formatToggleButton.addEventListener('click', () => {
         is24HourFormat = !is24HourFormat;
         formatToggleButton.textContent = is24HourFormat ? '12h' : '24h';
         updateClock();
     });
 
-    // === Phần Bấm Giờ và Thống Kê ===
+    // === Phần Bấm Giờ và Lịch Sử ===
     const stopwatchDisplay = document.getElementById('stopwatch-display');
     const startBtn = document.getElementById('start-btn');
     const stopBtn = document.getElementById('stop-btn');
-    const resetBtn = document.getElementById('reset-btn'); // Tham chiếu nút Reset
-    const travelStats = document.getElementById('travel-stats'); // Tham chiếu khu vực thống kê
+    const resetBtn = document.getElementById('reset-btn');
+    const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const travelHistoryList = document.getElementById('travel-history-list');
+    // Phân trang
+    const prevPageBtn = document.getElementById('prev-page-btn');
+    const nextPageBtn = document.getElementById('next-page-btn');
+    const pageInfo = document.getElementById('page-info');
 
     let stopwatchInterval = null;
-    let startTime = 0;          // Timestamp bắt đầu (Date.now())
-    let elapsedTime = 0;        // Tổng mili giây đã trôi qua
+    let startTime = 0;
+    let elapsedTime = 0;
     let isRunning = false;
-    let stopwatchStartDate = null; // Lưu đối tượng Date khi bắt đầu
+    let stopwatchStartDate = null;
+    let travelHistory = [];
+    let currentPage = 1;
+    const itemsPerPage = 5;
 
-    // Hàm định dạng thời gian bấm giờ (HH:MM:SS.ms)
     function formatStopwatchTime(time) {
         const date = new Date(time);
-        const hours = formatNumber(date.getUTCHours());
-        const minutes = formatNumber(date.getUTCMinutes());
-        const seconds = formatNumber(date.getUTCSeconds());
-        const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+        const hours = formatNumber(date.getUTCHours()); const minutes = formatNumber(date.getUTCMinutes());
+        const seconds = formatNumber(date.getUTCSeconds()); const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
         return `${hours}:${minutes}:${seconds}.${milliseconds}`;
     }
 
+    function displayHistory() {
+        travelHistoryList.innerHTML = '';
+        clearHistoryBtn.disabled = travelHistory.length === 0;
+
+        if (travelHistory.length === 0) {
+            pageInfo.textContent = 'Không có lịch sử';
+            prevPageBtn.disabled = true; nextPageBtn.disabled = true; return;
+        }
+
+        const totalItems = travelHistory.length; const totalPages = Math.ceil(totalItems / itemsPerPage);
+        if (currentPage < 1) currentPage = 1; if (currentPage > totalPages) currentPage = totalPages;
+        const startIndex = (currentPage - 1) * itemsPerPage; const endIndex = startIndex + itemsPerPage;
+        const itemsToShow = travelHistory.slice().reverse().slice(startIndex, endIndex);
+
+        itemsToShow.forEach(entry => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <strong>Ngày:</strong> <span>${entry.startDateStr}</span><br>
+                <strong>Bắt đầu:</strong> <span>${entry.startTimeStr}</span><br>
+                <strong>Kết thúc:</strong> <span>${entry.endTimeStr}</span><br>
+                <strong>Thời gian:</strong> <span>${entry.finalDurationStr}</span><br>
+                <strong>(Tương đương):</strong> <span>${entry.durationMinutesStr}</span>
+            `;
+            travelHistoryList.appendChild(li);
+        });
+
+        pageInfo.textContent = `Trang ${currentPage} / ${totalPages}`;
+        prevPageBtn.disabled = currentPage === 1; nextPageBtn.disabled = currentPage === totalPages;
+    }
+
+    function loadHistory() {
+        const savedHistory = localStorage.getItem('travelHistory');
+        travelHistory = savedHistory ? JSON.parse(savedHistory) : [];
+        currentPage = 1; displayHistory();
+    }
+    function saveHistory() { localStorage.setItem('travelHistory', JSON.stringify(travelHistory)); }
     function updateStopwatchDisplay() {
         const currentTime = Date.now();
         const currentElapsedTime = currentTime - startTime + elapsedTime;
         stopwatchDisplay.textContent = formatStopwatchTime(currentElapsedTime);
     }
-
     function startStopwatch() {
-        if (isRunning) return;
-        isRunning = true;
-        // Nếu elapsedTime = 0 (bắt đầu mới), lưu lại ngày giờ bắt đầu
-        if (elapsedTime === 0) {
-            stopwatchStartDate = new Date();
-        }
-        startTime = Date.now(); // Luôn lấy timestamp mới khi nhấn start/resume
+        if (isRunning) return; isRunning = true;
+        if (elapsedTime === 0) { stopwatchStartDate = new Date(); }
+        startTime = Date.now();
         stopwatchInterval = setInterval(updateStopwatchDisplay, 10);
-
-        // Xóa thống kê cũ khi bắt đầu
-        travelStats.innerHTML = '';
-
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        resetBtn.disabled = false; // Cho phép reset khi đang chạy
+        startBtn.disabled = true; stopBtn.disabled = false; resetBtn.disabled = false;
     }
-
     function stopStopwatch() {
-        if (!isRunning) return;
-        isRunning = false;
-        clearInterval(stopwatchInterval);
-        elapsedTime += Date.now() - startTime;
+        if (!isRunning) return; isRunning = false; clearInterval(stopwatchInterval);
+        elapsedTime += Date.now() - startTime; const finalDurationStr = formatStopwatchTime(elapsedTime);
+        stopwatchDisplay.textContent = finalDurationStr;
 
-        const finalDurationStr = formatStopwatchTime(elapsedTime);
-        stopwatchDisplay.textContent = finalDurationStr; // Cập nhật hiển thị chính
+        const endTime = new Date(); const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
+        const startTimeStr = formatTimeHHMMSS(stopwatchStartDate); const endTimeStr = formatTimeHHMMSS(endTime);
+        const totalSecondsRaw = Math.floor(elapsedTime / 1000); const totalMinutes = Math.floor(totalSecondsRaw / 60);
+        const remainingSeconds = totalSecondsRaw % 60; const durationMinutesStr = `${totalMinutes} phút ${remainingSeconds} giây`;
+        const newEntry = { id: Date.now(), startDateStr, startTimeStr, endTimeStr, finalDurationStr, durationMinutesStr };
 
-        // --- Hiển thị Thống kê ---
-        const endTime = new Date(); // Thời điểm kết thúc
-        const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
-        const startTimeStr = formatTimeHHMMSS(stopwatchStartDate);
-        const endTimeStr = formatTimeHHMMSS(endTime);
-
-        // Tính tổng phút và giây dư
-        const totalSecondsRaw = Math.floor(elapsedTime / 1000);
-        const totalMinutes = Math.floor(totalSecondsRaw / 60);
-        const remainingSeconds = totalSecondsRaw % 60;
-        const durationMinutesStr = `${totalMinutes} phút ${remainingSeconds} giây`;
-
-        travelStats.innerHTML = `
-            <p><strong>Ngày:</strong> <span>${startDateStr}</span></p>
-            <p><strong>Bắt đầu:</strong> <span>${startTimeStr}</span></p>
-            <p><strong>Kết thúc:</strong> <span>${endTimeStr}</span></p>
-            <p><strong>Tổng thời gian:</strong> <span>${finalDurationStr}</span></p>
-            <p><strong>(Tương đương):</strong> <span>${durationMinutesStr}</span></p>
-        `;
-        // --- Kết thúc hiển thị Thống kê ---
-
-        startBtn.disabled = false; // Cho phép bắt đầu lại (tiếp tục)
-        stopBtn.disabled = true;
-        resetBtn.disabled = false; // Cho phép reset sau khi dừng
+        travelHistory.push(newEntry); saveHistory(); currentPage = 1; displayHistory();
+        startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = false;
     }
-
-    // Hàm Reset
     function resetStopwatch() {
-        if (isRunning) {
-            clearInterval(stopwatchInterval); // Dừng interval nếu đang chạy
-        }
-        isRunning = false;
-        elapsedTime = 0;
-        startTime = 0;
-        stopwatchStartDate = null; // Reset ngày bắt đầu
-        stopwatchDisplay.textContent = formatStopwatchTime(0); // Reset hiển thị bấm giờ
-        travelStats.innerHTML = ''; // Xóa thống kê
-
-        // Reset trạng thái nút
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        resetBtn.disabled = true;
+        if (isRunning) { clearInterval(stopwatchInterval); }
+        isRunning = false; elapsedTime = 0; startTime = 0; stopwatchStartDate = null;
+        stopwatchDisplay.textContent = formatStopwatchTime(0);
+        startBtn.disabled = false; stopBtn.disabled = true; resetBtn.disabled = true;
     }
-
-    // Gán sự kiện cho các nút
+    function clearTravelHistory() {
+        // if (!confirm("Bạn có chắc muốn xóa toàn bộ lịch sử di chuyển?")) return;
+        travelHistory = []; saveHistory(); currentPage = 1; displayHistory();
+    }
+    prevPageBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; displayHistory(); } });
+    nextPageBtn.addEventListener('click', () => { const totalPages = Math.ceil(travelHistory.length / itemsPerPage); if (currentPage < totalPages) { currentPage++; displayHistory(); } });
     startBtn.addEventListener('click', startStopwatch);
     stopBtn.addEventListener('click', stopStopwatch);
-    resetBtn.addEventListener('click', resetStopwatch); // Gán sự kiện cho nút Reset
+    resetBtn.addEventListener('click', resetStopwatch);
+    clearHistoryBtn.addEventListener('click', clearTravelHistory);
 
+    // === Phần Giữ Màn Hình Sáng (Screen Wake Lock API) ===
+    const wakeLockBtn = document.getElementById('wake-lock-btn');
+    let wakeLock = null;
+
+    async function toggleWakeLock() {
+        if (!('wakeLock' in navigator)) { alert('Trình duyệt này không hỗ trợ tính năng Giữ màn hình sáng.'); wakeLockBtn.disabled = true; return; }
+        try {
+            if (wakeLock) { await wakeLock.release(); }
+            else {
+                wakeLock = await navigator.wakeLock.request('screen');
+                wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng';
+                wakeLock.addEventListener('release', () => {
+                    console.log('Wake Lock đã được thả.'); wakeLockBtn.classList.remove('active');
+                    wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null;
+                });
+            }
+        } catch (err) {
+            console.error(`${err.name}, ${err.message}`); alert(`Lỗi khi ${wakeLock ? 'thả' : 'yêu cầu'} Wake Lock: ${err.message}`);
+            if (wakeLock && !wakeLock.released) { wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng'; }
+            else { wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; }
+        }
+    }
+    if (!('wakeLock' in navigator)) { wakeLockBtn.disabled = true; wakeLockBtn.title = 'Trình duyệt không hỗ trợ tính năng này'; }
+    else {
+        wakeLockBtn.addEventListener('click', toggleWakeLock);
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                try {
+                    wakeLock = await navigator.wakeLock.request('screen'); wakeLockBtn.classList.add('active'); wakeLockBtn.textContent = 'Đang giữ sáng';
+                    wakeLock.addEventListener('release', () => { console.log('Wake Lock đã được thả (sau khi hiển thị lại).'); wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; });
+                    console.log('Wake Lock đã được yêu cầu lại thành công.');
+                } catch (err) { console.error(`Không thể yêu cầu lại Wake Lock: ${err.name}, ${err.message}`); wakeLockBtn.classList.remove('active'); wakeLockBtn.textContent = 'Giữ sáng'; wakeLock = null; }
+            }
+        });
+    }
 
     // ---- KHỞI CHẠY ----
-    // Đồng hồ chính
-    formatToggleButton.textContent = is24HourFormat ? '12h' : '24h';
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    // Bấm giờ (khởi tạo hiển thị và trạng thái nút)
-    resetStopwatch(); // Gọi reset để đặt trạng thái ban đầu chuẩn
+    updateClock(); setInterval(updateClock, 1000);
+    loadHistory(); resetStopwatch();
 
 </script>
 
