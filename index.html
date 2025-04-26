@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đồng Hồ Web - Phiên Bản Cải Tiến</title>
+    <title>Đồng Hồ Web - Mục tiêu Thời lượng</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -26,11 +26,11 @@
         /* Main Container */
         .clock-container {
             width: 100%;
-            max-width: 700px; /* Slightly wider for date input */
+            max-width: 700px;
             text-align: center;
             position: relative;
-            background-color: rgba(40, 45, 70, 0.7); /* Slightly transparent dark background */
-            padding: 60px 5% 40px 5%; /* More top padding for controls */
+            background-color: rgba(40, 45, 70, 0.7);
+            padding: 60px 5% 40px 5%;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
@@ -68,19 +68,18 @@
 
         /* Message Area */
         .message-area {
-            min-height: 1.5em; /* Reserve space */
+            min-height: 1.5em;
             margin-bottom: 15px;
             font-size: 0.9rem;
             font-weight: 500;
             text-align: center;
             transition: opacity 0.3s ease;
         }
-        .message-area.error { color: #d9534f; /* Red */ }
-        .message-area.success { color: #5cb85c; /* Green */ }
-        .message-area.info { color: #5bc0de; /* Blue */ }
-        .message-area.warning { color: #f0ad4e; /* Orange */ }
+        .message-area.error { color: #d9534f; }
+        .message-area.success { color: #5cb85c; }
+        .message-area.info { color: #5bc0de; }
+        .message-area.warning { color: #f0ad4e; }
         .message-area:empty { opacity: 0; }
-
 
         /* Digital Clock Display */
         .digital-clock {
@@ -91,7 +90,7 @@
             justify-content: center;
             align-items: baseline;
             flex-wrap: wrap;
-            color: #66fcf1; /* Cyan accent */
+            color: #66fcf1;
             text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
         }
         #hours, #minutes, #seconds, .colon, .ampm {
@@ -100,7 +99,6 @@
             line-height: 1;
         }
         #hours, #minutes, #seconds { font-size: clamp(3.5rem, 16vw, 6.5rem); }
-        /* #seconds { opacity: 0.85; } */ /* Removed reduced opacity for seconds */
         .colon { font-size: clamp(3rem, 14vw, 5.5rem); margin: 0 clamp(-2px, 0.5vw, 3px); opacity: 0.85; }
         .ampm {
             font-family: 'Roboto', sans-serif;
@@ -110,8 +108,8 @@
             margin-left: clamp(5px, 1.5vw, 10px);
             text-transform: uppercase;
             opacity: 0.9;
-            align-self: flex-end; /* Align AM/PM lower */
-            padding-bottom: calc(clamp(3.5rem, 16vw, 6.5rem) * 0.1); /* Adjust padding based on main time font size */
+            align-self: flex-end;
+            padding-bottom: calc(clamp(3.5rem, 16vw, 6.5rem) * 0.1);
         }
 
         /* Date Display */
@@ -119,7 +117,7 @@
             font-size: clamp(1rem, 3.5vw, 1.2rem);
             margin-top: 0;
             margin-bottom: 35px;
-            color: #bdc3c7; /* Lighter grey */
+            color: #bdc3c7;
             font-weight: 400;
             letter-spacing: 0.5px;
         }
@@ -131,21 +129,43 @@
             background-color: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
-        .target-input-group {
+        /* NEW: Target Mode Selector */
+        .target-mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .target-mode-selector label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #ccc;
+        }
+        .target-mode-selector input[type="radio"] {
+            cursor: pointer;
+            accent-color: #66fcf1; /* Match accent color */
+        }
+
+        /* Input Groups (Time, Duration) */
+        .target-input-group, .target-duration-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px 15px; /* More gap */
+            gap: 10px 15px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        .target-input-group label {
+        .target-input-group label, .target-duration-group label {
             font-size: 0.95rem;
             color: #ccc;
             white-space: nowrap;
         }
         .target-input-group input[type="date"],
-        .target-input-group input[type="time"] {
+        .target-input-group input[type="time"],
+        .target-duration-group input[type="number"] { /* Added duration input */
             background-color: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #eee;
@@ -153,17 +173,21 @@
             border-radius: 6px;
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9rem;
-            height: 40px; /* Consistent height */
+            height: 40px;
             box-sizing: border-box;
         }
         .target-input-group input[type="date"] { min-width: 140px; }
         .target-input-group input[type="time"] { min-width: 115px; }
+        .target-duration-group input[type="number"] { min-width: 100px; text-align: right; } /* Style duration input */
+
         .target-input-group input[type="date"]::-webkit-calendar-picker-indicator,
         .target-input-group input[type="time"]::-webkit-calendar-picker-indicator {
             filter: invert(0.8);
             cursor: pointer;
         }
-        .target-input-group button {
+
+        /* --- MODIFIED: Apply common styles to BOTH buttons --- */
+        #set-target-btn, #set-duration-target-btn {
             background-color: #5bc0de; /* Info blue */
             color: #fff;
             border: none;
@@ -176,15 +200,28 @@
             height: 40px; /* Consistent height */
             box-sizing: border-box;
             line-height: 40px; /* Center text vertically */
+            margin-left: 5px; /* Add some space before button */
         }
-        .target-input-group button:hover:not(:disabled) { filter: brightness(1.15); }
-        .target-input-group button:active:not(:disabled) { transform: scale(0.96); }
-        .target-input-group button:disabled,
-        .target-input-group input:disabled {
+        #set-target-btn:hover:not(:disabled),
+        #set-duration-target-btn:hover:not(:disabled) {
+             filter: brightness(1.15);
+        }
+        #set-target-btn:active:not(:disabled),
+        #set-duration-target-btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        #set-target-btn:disabled,
+        #set-duration-target-btn:disabled, /* Apply disabled styles to both */
+        .target-input-group input:disabled,
+        .target-duration-group input:disabled {
             background-color: #777;
             cursor: not-allowed;
             opacity: 0.7;
         }
+        /* --- END MODIFIED --- */
+
+
+        /* Target Info & Status */
         #target-info {
             font-size: 0.95rem;
             color: #bbb;
@@ -192,7 +229,7 @@
             margin-bottom: 8px;
             font-style: italic;
         }
-        #target-info span { font-weight: bold; color: #f0a500; font-style: normal; } /* Orange for target time */
+        #target-info span { font-weight: bold; color: #f0a500; font-style: normal; } /* Orange for target */
         #arrival-status {
             font-size: 0.95rem;
             font-weight: bold;
@@ -202,9 +239,14 @@
             opacity: 1;
         }
         #arrival-status:empty { opacity: 0; }
+        /* Status classes for Time mode */
         #arrival-status.early { color: #5cb85c; } /* Green */
         #arrival-status.late { color: #d9534f; } /* Red */
         #arrival-status.on-time { color: #5bc0de; } /* Blue */
+        /* Status classes for Duration mode */
+        #arrival-status.completed { color: #5cb85c; } /* Green */
+        #arrival-status.exceeded { color: #d9534f; } /* Red */
+        /* Common status */
         #arrival-status.running-late { color: #f0ad4e; font-style: italic; } /* Orange */
 
         /* Progress Bar */
@@ -215,7 +257,7 @@
             border-radius: 12px;
             overflow: hidden;
             margin-top: 5px;
-            position: relative; /* For ARIA */
+            position: relative;
         }
         #progress-bar {
             width: 0%;
@@ -223,13 +265,13 @@
             border-radius: 12px;
             transition: width 0.2s linear, background-color 0.3s ease;
             text-align: center;
-            color: rgba(0, 0, 0, 0.8); /* Darker text on bar */
+            color: rgba(0, 0, 0, 0.8);
             font-size: 0.85rem;
             line-height: 24px;
             font-weight: bold;
             box-sizing: border-box;
             white-space: nowrap;
-            background-color: #5cb85c; /* Default green */
+            background-color: #5cb85c;
         }
 
         /* Stopwatch Section */
@@ -237,7 +279,7 @@
         #stopwatch-display {
             font-family: 'Roboto Mono', monospace;
             font-size: clamp(2.2rem, 9vw, 3.5rem);
-            color: #f0a500; /* Orange */
+            color: #f0a500;
             margin-bottom: 35px;
             letter-spacing: 1px;
             font-weight: 500;
@@ -248,7 +290,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 12px 15px; /* Adjust gap */
+            gap: 12px 15px;
         }
         .stopwatch-controls button {
             border: none;
@@ -262,19 +304,19 @@
             font-weight: 500;
             transition: all 0.2s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-            min-width: 120px; /* Slightly wider buttons */
+            min-width: 120px;
         }
-        .stopwatch-controls button#start-btn { background-color: #5cb85c; } /* Green */
-        .stopwatch-controls button#pause-btn { background-color: #f0ad4e; } /* Orange */
-        .stopwatch-controls button#resume-btn { background-color: #5bc0de; } /* Blue */
-        .stopwatch-controls button#stop-btn { background-color: #d9534f; } /* Red */
-        .stopwatch-controls button#reset-btn { background-color: #777; } /* Grey */
+        .stopwatch-controls button#start-btn { background-color: #5cb85c; }
+        .stopwatch-controls button#pause-btn { background-color: #f0ad4e; }
+        .stopwatch-controls button#resume-btn { background-color: #5bc0de; }
+        .stopwatch-controls button#stop-btn { background-color: #d9534f; }
+        .stopwatch-controls button#reset-btn { background-color: #777; }
         .stopwatch-controls button#clear-history-btn {
-             background-color: #6c757d; /* Secondary grey */
-             font-size: 0.9rem;
-             min-width: auto;
-             padding: 10px 20px; /* Smaller padding */
-             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            background-color: #6c757d;
+            font-size: 0.9rem;
+            min-width: auto;
+            padding: 10px 20px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
         }
         .stopwatch-controls button:hover:not(:disabled) {
             transform: translateY(-2px);
@@ -301,7 +343,7 @@
         .history-section h3 {
             color: #ccc;
             margin-bottom: 20px;
-            font-size: 1.2rem; /* Slightly larger */
+            font-size: 1.2rem;
             text-align: left;
             font-weight: 500;
         }
@@ -309,21 +351,21 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            min-height: 150px; /* Reduced min-height */
+            min-height: 150px;
             text-align: left;
             margin-bottom: 25px;
         }
         .history-entry {
             background-color: rgba(255, 255, 255, 0.04);
             border-radius: 8px;
-            padding: 18px; /* More padding */
+            padding: 18px;
             margin-bottom: 15px;
-            border-left: 5px solid #f0a500; /* Thicker border */
+            border-left: 5px solid #f0a500;
             font-size: 0.9rem;
             transition: background-color 0.2s ease;
             display: flex;
-            flex-direction: column; /* Stack rows vertically */
-            gap: 8px; /* Gap between rows */
+            flex-direction: column;
+            gap: 8px;
         }
         .history-entry:hover { background-color: rgba(255, 255, 255, 0.08); }
         .history-row {
@@ -331,18 +373,19 @@
             justify-content: space-between;
             align-items: baseline;
             flex-wrap: wrap;
-            gap: 5px 15px; /* Gap within a row */
+            gap: 5px 15px;
         }
         .history-group { display: flex; align-items: baseline; gap: 6px; }
         .history-label { color: #bbb; font-weight: 500; min-width: 70px; text-align: left; }
         .history-value { font-family: 'Roboto Mono', monospace; color: #f0a500; font-weight: bold; text-align: left; }
         .history-value-alt { font-family: 'Roboto', sans-serif; font-size: 0.85em; color: #ccc; margin-left: 5px; }
-        .history-status { margin-top: 8px; font-weight: bold; font-size: 0.9em; width: 100%; } /* Status on its own line */
-        .history-status.early { color: #5cb85c; }
-        .history-status.late { color: #d9534f; }
+        .history-status { margin-top: 8px; font-weight: bold; font-size: 0.9em; width: 100%; }
+        /* Status classes need to match arrival-status */
+        .history-status.early, .history-status.completed { color: #5cb85c; }
+        .history-status.late, .history-status.exceeded { color: #d9534f; }
         .history-status.on-time { color: #5bc0de; }
         .no-history-message {
-             text-align: center; color: #888; padding: 30px 0; font-style: italic;
+            text-align: center; color: #888; padding: 30px 0; font-style: italic;
         }
 
         /* Pagination Controls */
@@ -385,27 +428,34 @@
             .colon { font-size: clamp(2.5rem, 16vw, 4.5rem); }
             .ampm { font-size: clamp(1.1rem, 6vw, 1.7rem); }
             .date-display { font-size: clamp(0.9rem, 4vw, 1.1rem); }
-            .target-input-group { flex-direction: column; align-items: stretch; gap: 12px; }
-            .target-input-group label { text-align: center; }
+            /* Adjust target groups for mobile */
+            .target-mode-selector { gap: 15px; margin-bottom: 15px;}
+            .target-input-group, .target-duration-group { flex-direction: column; align-items: stretch; gap: 12px; }
+            .target-input-group label, .target-duration-group label { text-align: center; }
             .target-input-group input[type="date"],
             .target-input-group input[type="time"],
-            .target-input-group button { width: 100%; min-width: unset; }
+            .target-duration-group input[type="number"],
+            /* Apply to both buttons on mobile */
+            #set-target-btn, #set-duration-target-btn {
+                 width: 100%; min-width: unset; margin-left: 0;
+            }
+
             #stopwatch-display { font-size: clamp(1.8rem, 10vw, 3rem); }
             .stopwatch-controls { gap: 10px; }
             .stopwatch-controls button { min-width: 100px; padding: 10px 20px; font-size: 0.9rem; }
             .history-entry { padding: 15px; }
             .history-row { flex-direction: column; align-items: flex-start; gap: 3px; }
-            .history-group { width: 100%; justify-content: space-between; } /* Align label and value */
+            .history-group { width: 100%; justify-content: space-between; }
             .history-label { min-width: 60px; }
         }
-         @media (max-width: 400px) {
-             #hours, #minutes, #seconds { font-size: clamp(2.5rem, 20vw, 4.5rem); }
-             .colon { font-size: clamp(2rem, 18vw, 3.5rem); }
-             .ampm { font-size: clamp(1rem, 7vw, 1.5rem); }
-             .stopwatch-controls button { min-width: 90px; padding: 10px 15px; font-size: 0.85rem; }
-             .pagination-controls button { padding: 6px 10px; font-size: 0.8rem;}
-             #page-info { font-size: 0.8rem; }
-         }
+        @media (max-width: 400px) {
+            #hours, #minutes, #seconds { font-size: clamp(2.5rem, 20vw, 4.5rem); }
+            .colon { font-size: clamp(2rem, 18vw, 3.5rem); }
+            .ampm { font-size: clamp(1rem, 7vw, 1.5rem); }
+            .stopwatch-controls button { min-width: 90px; padding: 10px 15px; font-size: 0.85rem; }
+            .pagination-controls button { padding: 6px 10px; font-size: 0.8rem;}
+            #page-info { font-size: 0.8rem; }
+        }
 
     </style>
 </head>
@@ -426,13 +476,31 @@
     <div class="date-display" id="date"></div>
 
     <div class="target-section">
-        <div class="target-input-group">
-            <label for="target-date">Ngày mục tiêu:</label>
+        <div class="target-mode-selector">
+            <label>
+                <input type="radio" name="target-mode" value="time" id="target-mode-time" checked>
+                Theo Thời điểm
+            </label>
+            <label>
+                <input type="radio" name="target-mode" value="duration" id="target-mode-duration">
+                Theo Thời lượng
+            </label>
+        </div>
+
+        <div id="target-time-group" class="target-input-group">
+            <label for="target-date">Ngày:</label>
             <input type="date" id="target-date" name="target-date">
-            <label for="target-time">Giờ mục tiêu:</label>
+            <label for="target-time">Giờ:</label>
             <input type="time" id="target-time" name="target-time">
             <button id="set-target-btn">Đặt Mục Tiêu</button>
         </div>
+
+        <div id="target-duration-group" class="target-duration-group hidden">
+            <label for="target-duration-input">Thời lượng (phút):</label>
+            <input type="number" id="target-duration-input" name="target-duration" min="1" step="1">
+            <button id="set-duration-target-btn">Đặt Mục Tiêu</button>
+        </div>
+
         <div id="target-info" aria-live="polite">Chưa đặt mục tiêu</div>
         <div id="arrival-status" aria-live="polite"></div>
         <div class="progress-bar-container" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -446,15 +514,16 @@
             <button id="start-btn" disabled>Bắt đầu</button>
             <button id="pause-btn" class="hidden">Tạm dừng</button>
             <button id="resume-btn" class="hidden">Tiếp tục</button>
-            <button id="stop-btn" class="hidden">Kết thúc</button> <button id="reset-btn" disabled>Reset</button>
+            <button id="stop-btn" class="hidden">Kết thúc</button>
+            <button id="reset-btn" disabled>Reset</button>
             <button id="clear-history-btn">Xóa Lịch Sử</button>
         </div>
     </div>
 
     <div class="history-section">
-        <h3>Lịch sử Di chuyển</h3>
+        <h3>Lịch sử Di chuyển / Hoàn thành</h3>
         <ul id="travel-history-list">
-             <li class="no-history-message">Không có lịch sử nào được ghi lại.</li>
+            <li class="no-history-message">Không có lịch sử nào được ghi lại.</li>
         </ul>
         <div class="pagination-controls">
             <button id="prev-page-btn" disabled>Trước</button>
@@ -472,52 +541,70 @@
     const ampmElement = document.getElementById('ampm');
     const dateElement = document.getElementById('date');
     const formatToggleButton = document.getElementById('format-toggle-btn');
-    const targetDateInput = document.getElementById('target-date'); // New Date Input
+    // Target Mode Elements
+    const targetModeTimeRadio = document.getElementById('target-mode-time');
+    const targetModeDurationRadio = document.getElementById('target-mode-duration');
+    const targetTimeGroup = document.getElementById('target-time-group');
+    const targetDurationGroup = document.getElementById('target-duration-group');
+    // Time Target Inputs
+    const targetDateInput = document.getElementById('target-date');
     const targetTimeInput = document.getElementById('target-time');
-    const setTargetBtn = document.getElementById('set-target-btn');
+    // Duration Target Input
+    const targetDurationInput = document.getElementById('target-duration-input');
+    // Common Target Elements
+    const setTargetBtn = document.getElementById('set-target-btn'); // Button for time mode
+    const setDurationTargetBtn = document.getElementById('set-duration-target-btn'); // Button for duration mode
     const targetInfo = document.getElementById('target-info');
     const arrivalStatus = document.getElementById('arrival-status');
     const progressBarContainer = document.querySelector('.progress-bar-container');
     const progressBar = document.getElementById('progress-bar');
+    // Stopwatch Elements
     const stopwatchDisplay = document.getElementById('stopwatch-display');
-    // Updated Stopwatch Buttons
     const startBtn = document.getElementById('start-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const resumeBtn = document.getElementById('resume-btn');
-    const stopBtn = document.getElementById('stop-btn'); // Finish button
+    const stopBtn = document.getElementById('stop-btn');
     const resetBtn = document.getElementById('reset-btn');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
+    // History Elements
     const travelHistoryList = document.getElementById('travel-history-list');
     const prevPageBtn = document.getElementById('prev-page-btn');
     const nextPageBtn = document.getElementById('next-page-btn');
     const pageInfo = document.getElementById('page-info');
+    // Other Elements
     const wakeLockBtn = document.getElementById('wake-lock-btn');
-    const messageArea = document.getElementById('message-area'); // Message Area
+    const messageArea = document.getElementById('message-area');
 
     // === State Variables ===
     let is24HourFormat = false;
     let mainClockIntervalId = null;
     let stopwatchIntervalId = null;
     let stopwatchState = 'idle'; // 'idle', 'running', 'paused', 'stopped'
-    let startTime = 0;       // Timestamp when stopwatch last started/resumed
-    let elapsedTime = 0;     // Total time elapsed before the current run/pause
-    let stopwatchStartDate = null; // Actual Date object when the *first* start occurred
-    let targetDateTime = null; // Combined Date object for target date and time
-    let estimatedDurationMs = 0; // Duration from stopwatchStartDate to targetDateTime
+    let startTime = 0;
+    let elapsedTime = 0;
+    let stopwatchStartDate = null; // Actual Date when stopwatch *first* started
+    // Target State
+    let targetMode = 'time'; // 'time' or 'duration' - NEW
+    let targetDateTime = null; // Date object for 'time' mode
+    let targetDurationMinutes = null; // Number of minutes for 'duration' mode - NEW
+    let estimatedDurationMs = 0; // Calculated duration based on target mode
+    let projectedTargetDateTime = null; // Calculated target Date even in duration mode - NEW (for comparison)
+    // History State
     let travelHistory = [];
     let currentPage = 1;
     const itemsPerPage = 5;
+    // Other State
     let wakeLock = null;
-    let messageTimeoutId = null; // For clearing messages
+    let messageTimeoutId = null;
 
     // === LocalStorage Keys ===
-    const HISTORY_STORAGE_KEY = 'travelClockHistory_v3'; // Incremented version
+    const HISTORY_STORAGE_KEY = 'travelClockHistory_v4'; // Incremented version
     const FORMAT_STORAGE_KEY = 'clockFormatPreference';
+    const TARGET_MODE_STORAGE_KEY = 'targetModePreference'; // NEW: Save target mode preference
 
     // === Utility Functions ===
     function formatNumber(num) { return num < 10 ? '0' + num : num; }
 
-    // Formats a Date object to HH:MM:SS string
     function formatTimeHHMMSS(date) {
         if (!date || !(date instanceof Date) || isNaN(date)) return 'N/A';
         try {
@@ -531,21 +618,19 @@
         }
     }
 
-    // Formats a Date object to YYYY-MM-DD string (for input default)
     function formatDateYYYYMMDD(date) {
-         if (!date || !(date instanceof Date) || isNaN(date)) return '';
-         try {
-             const year = date.getFullYear();
-             const month = formatNumber(date.getMonth() + 1);
-             const day = formatNumber(date.getDate());
-             return `${year}-${month}-${day}`;
-         } catch (error) {
-             console.error("Error formatting YYYYMMDD:", error, date);
-             return '';
-         }
+        if (!date || !(date instanceof Date) || isNaN(date)) return '';
+        try {
+            const year = date.getFullYear();
+            const month = formatNumber(date.getMonth() + 1);
+            const day = formatNumber(date.getDate());
+            return `${year}-${month}-${day}`;
+        } catch (error) {
+            console.error("Error formatting YYYYMMDD:", error, date);
+            return '';
+        }
     }
 
-    // Formats milliseconds duration to HH:MM:SS.ms string
     function formatStopwatchTime(timeMs) {
         if (typeof timeMs !== 'number' || isNaN(timeMs) || timeMs < 0) timeMs = 0;
         try {
@@ -561,30 +646,45 @@
         }
     }
 
-    // Display messages in the message area
-    function showMessage(text, type = 'info', duration = 3000) {
-        if (messageTimeoutId) clearTimeout(messageTimeoutId); // Clear previous timeout
-        messageArea.textContent = text;
-        messageArea.className = `message-area ${type}`; // Apply class for styling
-        messageArea.style.opacity = 1;
-
-        if (duration > 0) {
-             messageTimeoutId = setTimeout(() => {
-                 messageArea.style.opacity = 0;
-                 // Optionally clear text after fade out:
-                 // setTimeout(() => { messageArea.textContent = ''; messageArea.className = 'message-area'; }, 300);
-             }, duration);
+    // Format duration in milliseconds to a readable string (e.g., "15 phút 32 giây")
+    function formatDurationReadable(timeMs) {
+        if (typeof timeMs !== 'number' || isNaN(timeMs) || timeMs < 0) return 'N/A';
+        try {
+            const totalSeconds = Math.round(timeMs / 1000); // Round to nearest second
+            if (totalSeconds < 60) {
+                return `${totalSeconds} giây`;
+            }
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            if (seconds === 0) {
+                return `${minutes} phút`;
+            }
+            return `${minutes} phút ${seconds} giây`;
+        } catch (error) {
+            console.error("Error formatting readable duration:", error, timeMs);
+            return 'Lỗi thời gian';
         }
     }
 
-    // Clear messages immediately
-    function clearMessage() {
-         if (messageTimeoutId) clearTimeout(messageTimeoutId);
-         messageArea.textContent = '';
-         messageArea.className = 'message-area';
-         messageArea.style.opacity = 0;
+
+    function showMessage(text, type = 'info', duration = 3000) {
+        if (messageTimeoutId) clearTimeout(messageTimeoutId);
+        messageArea.textContent = text;
+        messageArea.className = `message-area ${type}`;
+        messageArea.style.opacity = 1;
+        if (duration > 0) {
+            messageTimeoutId = setTimeout(() => {
+                messageArea.style.opacity = 0;
+            }, duration);
+        }
     }
 
+    function clearMessage() {
+        if (messageTimeoutId) clearTimeout(messageTimeoutId);
+        messageArea.textContent = '';
+        messageArea.className = 'message-area';
+        messageArea.style.opacity = 0;
+    }
 
     // === Main Clock Logic ===
     function updateClock() {
@@ -592,107 +692,155 @@
             const now = new Date();
             let hours = now.getHours();
             const minutes = formatNumber(now.getMinutes());
-            const secondsValue = formatNumber(now.getSeconds()); // Keep seconds always visible
-
+            const secondsValue = formatNumber(now.getSeconds());
             let displayHours = hours;
             if (!is24HourFormat) {
                 const ampm = hours >= 12 ? 'PM' : 'AM';
                 displayHours = hours % 12;
-                displayHours = displayHours ? displayHours : 12; // Handle midnight (0 -> 12)
+                displayHours = displayHours ? displayHours : 12;
                 ampmElement.textContent = ampm;
                 ampmElement.classList.remove('hidden');
             } else {
                 ampmElement.classList.add('hidden');
             }
-
             hoursElement.textContent = formatNumber(displayHours);
             minutesElement.textContent = minutes;
-            secondsElement.textContent = secondsValue; // Always show seconds
-
-            // Update Date Display
+            secondsElement.textContent = secondsValue;
             const day = formatNumber(now.getDate());
             const month = formatNumber(now.getMonth() + 1);
             const year = now.getFullYear();
             const dayOfWeek = now.toLocaleDateString('vi-VN', { weekday: 'long' });
             const dateString = `${dayOfWeek}, ${day}/${month}/${year}`;
             dateElement.textContent = dateString;
-
         } catch (error) {
             console.error("Error updating main clock:", error);
-            // Display error non-intrusively if needed
         }
     }
 
-    // === Target Time Logic ===
-    function setTargetTime() {
-        clearMessage(); // Clear previous messages
-        arrivalStatus.textContent = '';
-        arrivalStatus.className = '';
+    // === Target Mode Logic ===
+    // NEW: Handle switching between target modes
+    function handleTargetModeChange() {
+        targetMode = document.querySelector('input[name="target-mode"]:checked').value;
+        console.log("Target mode changed to:", targetMode);
+        savePreferences(); // Save the new mode preference
 
-        const dateValue = targetDateInput.value;
-        const timeValue = targetTimeInput.value;
-
-        if (!dateValue || !timeValue) {
-            showMessage('Vui lòng chọn cả ngày và giờ mục tiêu.', 'error');
-            return;
+        // Show/hide the correct input group AND ITS BUTTON
+        if (targetMode === 'time') {
+            targetTimeGroup.classList.remove('hidden');
+            targetDurationGroup.classList.add('hidden');
+        } else { // duration mode
+            targetTimeGroup.classList.add('hidden');
+            targetDurationGroup.classList.remove('hidden');
         }
 
-        try {
-            // Combine date and time strings into a valid format for Date constructor
-            const dateTimeString = `${dateValue}T${timeValue}:00`;
-            const potentialTargetDate = new Date(dateTimeString);
+        // Clear existing target and reset related UI when mode changes
+        clearTargetState();
+        updateStopwatchUI('idle'); // Reset button states etc.
+    }
 
-            if (isNaN(potentialTargetDate)) {
-                 showMessage('Ngày hoặc giờ mục tiêu không hợp lệ.', 'error');
-                 return;
+    // NEW: Clear target-related state variables and UI
+    function clearTargetState() {
+        targetDateTime = null;
+        targetDurationMinutes = null;
+        estimatedDurationMs = 0;
+        projectedTargetDateTime = null;
+        targetInfo.textContent = 'Chưa đặt mục tiêu';
+        arrivalStatus.textContent = '';
+        arrivalStatus.className = '';
+        progressBar.style.width = '0%';
+        progressBar.textContent = '';
+        progressBarContainer.setAttribute('aria-valuenow', '0');
+        progressBar.style.backgroundColor = '#5cb85c';
+        // Don't reset stopwatch time (elapsedTime) here, only target
+    }
+
+
+    // === Target Setting Logic ===
+    // MODIFIED: Handles setting target for BOTH modes
+    function setTarget() {
+        clearMessage();
+        clearTargetState(); // Clear previous target info first
+
+        let isValidTarget = false;
+
+        if (targetMode === 'time') {
+            // --- Set Target by Time ---
+            const dateValue = targetDateInput.value;
+            const timeValue = targetTimeInput.value;
+            if (!dateValue || !timeValue) {
+                showMessage('Vui lòng chọn cả ngày và giờ mục tiêu.', 'error');
+                return;
             }
-
-            const now = new Date();
-            // No longer automatically push to tomorrow. User must select the correct date.
-            if (potentialTargetDate <= now) {
-                 showMessage('Thời gian mục tiêu phải ở trong tương lai.', 'warning', 5000);
-                 // Allow setting past time for testing/manual entry, but warn.
+            try {
+                const dateTimeString = `${dateValue}T${timeValue}:00`;
+                const potentialTargetDate = new Date(dateTimeString);
+                if (isNaN(potentialTargetDate)) {
+                    showMessage('Ngày hoặc giờ mục tiêu không hợp lệ.', 'error');
+                    return;
+                }
+                const now = new Date();
+                if (potentialTargetDate <= now) {
+                    showMessage('Thời gian mục tiêu phải ở trong tương lai.', 'warning', 5000);
+                    // Allow past time but warn
+                }
+                targetDateTime = potentialTargetDate; // Store the Date object
+                projectedTargetDateTime = targetDateTime; // For time mode, projected is the same
+                const targetDateStr = targetDateTime.toLocaleDateString('vi-VN');
+                const targetTimeStr = formatTimeHHMMSS(targetDateTime);
+                targetInfo.innerHTML = `Mục tiêu: <span>${targetTimeStr} (${targetDateStr})</span>`;
+                isValidTarget = true;
+            } catch (error) {
+                console.error("Error setting target time:", error);
+                showMessage("Đã xảy ra lỗi khi đặt mục tiêu thời gian.", 'error');
+                targetInfo.textContent = 'Lỗi đặt mục tiêu';
+                targetDateTime = null;
             }
+        } else {
+            // --- Set Target by Duration ---
+            const durationValue = parseInt(targetDurationInput.value, 10);
+            if (isNaN(durationValue) || durationValue <= 0) {
+                showMessage('Vui lòng nhập thời lượng mục tiêu hợp lệ (số phút > 0).', 'error');
+                targetDurationInput.focus(); // Focus the input
+                return;
+            }
+            try {
+                targetDurationMinutes = durationValue; // Store the duration
+                targetDateTime = null; // Explicitly null for duration mode initially
+                projectedTargetDateTime = null; // Will be calculated on start
+                targetInfo.innerHTML = `Mục tiêu: <span>${targetDurationMinutes} phút</span>`;
+                isValidTarget = true;
+            } catch (error) {
+                console.error("Error setting target duration:", error);
+                showMessage("Đã xảy ra lỗi khi đặt mục tiêu thời lượng.", 'error');
+                targetInfo.textContent = 'Lỗi đặt mục tiêu';
+                targetDurationMinutes = null;
+            }
+        }
 
-            targetDateTime = potentialTargetDate; // Store the combined Date object
-
-            // Format for display
-            const targetDateStr = targetDateTime.toLocaleDateString('vi-VN');
-            const targetTimeStr = formatTimeHHMMSS(targetDateTime);
-
-            targetInfo.innerHTML = `Mục tiêu: <span>${targetTimeStr} (${targetDateStr})</span>`;
+        // --- Common actions after setting target ---
+        if (isValidTarget) {
             showMessage('Đã đặt mục tiêu thành công!', 'success');
-
-            // Enable Start button, reset progress
-            updateStopwatchUI('idle'); // Reset UI based on idle state
-            progressBar.style.width = '0%';
-            progressBar.textContent = '';
-            progressBarContainer.setAttribute('aria-valuenow', '0');
-            progressBar.style.backgroundColor = '#5cb85c'; // Reset color
-
-            // If stopwatch was running, reset it but keep the target
+            // Reset stopwatch state if it was running/paused, but keep the new target
             if (stopwatchState === 'running' || stopwatchState === 'paused') {
-                resetStopwatch(false); // Reset stopwatch logic, keep inputs
+                resetStopwatch(false); // Reset stopwatch logic, keep inputs and new target
             } else {
                  // If idle or stopped, just reset display and elapsed time
                  elapsedTime = 0;
                  stopwatchDisplay.textContent = formatStopwatchTime(0);
             }
-
-            console.log("Target date & time set:", targetDateTime);
-
-        } catch (error) {
-            console.error("Error setting target time:", error);
-            showMessage("Đã xảy ra lỗi khi đặt mục tiêu.", 'error');
-            targetInfo.textContent = 'Lỗi đặt mục tiêu';
-            targetDateTime = null;
-            updateStopwatchUI('idle'); // Ensure UI reflects inability to start
+             updateStopwatchUI('idle'); // Update button states (Start should be enabled now)
+        } else {
+            updateStopwatchUI('idle'); // Ensure Start is disabled if target is invalid
         }
+        console.log("Target set - Mode:", targetMode, "DateTime:", targetDateTime, "DurationMins:", targetDurationMinutes);
     }
 
+
     // === Progress Bar Logic ===
+    // MODIFIED: Now uses estimatedDurationMs which is set based on mode
     function updateProgressBar(currentTotalElapsedTime) {
-        if (!targetDateTime || !stopwatchStartDate || estimatedDurationMs <= 0) {
+        // Check if we have a valid estimated duration to calculate progress
+        if (!estimatedDurationMs || estimatedDurationMs <= 0) {
             progressBar.style.width = '0%';
             progressBar.textContent = '';
             progressBarContainer.setAttribute('aria-valuenow', '0');
@@ -701,94 +849,88 @@
 
         try {
             let progressPercent = (currentTotalElapsedTime / estimatedDurationMs) * 100;
-            progressPercent = Math.max(0, Math.min(100, progressPercent)); // Clamp between 0 and 100
+            progressPercent = Math.max(0, Math.min(100, progressPercent));
 
             progressBar.style.width = progressPercent.toFixed(1) + '%';
             progressBar.textContent = progressPercent.toFixed(0) + '%';
             progressBarContainer.setAttribute('aria-valuenow', progressPercent.toFixed(0));
 
             // Change color based on progress
-            if (progressPercent >= 90) { // Changed threshold to 90%
+            if (progressPercent >= 90) {
                 progressBar.style.backgroundColor = '#d9534f'; // Red
-            } else if (progressPercent >= 60) { // Changed threshold to 60%
+            } else if (progressPercent >= 60) {
                 progressBar.style.backgroundColor = '#f0ad4e'; // Orange
             } else {
                 progressBar.style.backgroundColor = '#5cb85c'; // Green
             }
 
             // Update running late status only if stopwatch is running
+            // This logic works for both modes as it compares current elapsed time vs estimated duration
             if (stopwatchState === 'running') {
-                 if (progressPercent >= 100 && !arrivalStatus.classList.contains('running-late')) {
-                     arrivalStatus.textContent = '⚠️ Đang trễ so với mục tiêu!';
-                     arrivalStatus.className = 'running-late';
-                 } else if (progressPercent < 100 && arrivalStatus.classList.contains('running-late')) {
-                     // Clear running-late status if progress drops below 100 (e.g., target changed)
-                     arrivalStatus.textContent = '';
-                     arrivalStatus.className = '';
-                 }
+                if (currentTotalElapsedTime > estimatedDurationMs && !arrivalStatus.classList.contains('running-late')) {
+                     // Changed condition to > estimatedDurationMs
+                    arrivalStatus.textContent = '⚠️ Đang vượt quá mục tiêu!';
+                    arrivalStatus.className = 'running-late';
+                } else if (currentTotalElapsedTime <= estimatedDurationMs && arrivalStatus.classList.contains('running-late')) {
+                    // Clear running-late status if back within target (e.g., target changed - less likely now)
+                    arrivalStatus.textContent = '';
+                    arrivalStatus.className = '';
+                }
             }
-
         } catch (error) {
             console.error("Error updating progress bar:", error);
         }
     }
 
-    // === Stopwatch Logic (Revised with States) ===
+    // === Stopwatch Logic ===
 
-    // Updates the UI elements (buttons, inputs) based on the current stopwatch state
+    // MODIFIED: Update UI based on state AND whether a valid target is set
     function updateStopwatchUI(newState) {
         stopwatchState = newState;
 
-        // Default: Disable all action buttons, enable target inputs
+        // Determine if a valid target is currently set
+        const hasValidTarget = (targetMode === 'time' && targetDateTime) || (targetMode === 'duration' && targetDurationMinutes > 0);
+
+        // Default UI states
         startBtn.classList.add('hidden');
         pauseBtn.classList.add('hidden');
         resumeBtn.classList.add('hidden');
-        stopBtn.classList.add('hidden'); // Finish button
+        stopBtn.classList.add('hidden');
         resetBtn.disabled = true;
-        targetDateInput.disabled = false;
-        targetTimeInput.disabled = false;
-        setTargetBtn.disabled = false;
+        // Disable target inputs/mode selection while stopwatch is active
+        const isStopwatchActive = (newState === 'running' || newState === 'paused');
+        targetModeTimeRadio.disabled = isStopwatchActive;
+        targetModeDurationRadio.disabled = isStopwatchActive;
+        targetDateInput.disabled = isStopwatchActive;
+        targetTimeInput.disabled = isStopwatchActive;
+        targetDurationInput.disabled = isStopwatchActive;
+        setTargetBtn.disabled = isStopwatchActive; // Disable both set buttons
+        setDurationTargetBtn.disabled = isStopwatchActive;
+
 
         switch (stopwatchState) {
             case 'idle':
                 startBtn.classList.remove('hidden');
-                startBtn.disabled = !targetDateTime; // Enable Start only if target is set
-                resetBtn.disabled = true; // Cannot reset when idle and clean
+                startBtn.disabled = !hasValidTarget; // Enable Start only if a valid target exists
+                resetBtn.disabled = elapsedTime <= 0; // Enable Reset only if there's time elapsed
                 break;
             case 'running':
                 pauseBtn.classList.remove('hidden');
-                stopBtn.classList.remove('hidden'); // Show Finish button
+                stopBtn.classList.remove('hidden');
                 resetBtn.disabled = false;
-                // Disable target setting while running
-                targetDateInput.disabled = true;
-                targetTimeInput.disabled = true;
-                setTargetBtn.disabled = true;
                 break;
             case 'paused':
                 resumeBtn.classList.remove('hidden');
-                stopBtn.classList.remove('hidden'); // Show Finish button
+                stopBtn.classList.remove('hidden');
                 resetBtn.disabled = false;
-                // Disable target setting while paused
-                targetDateInput.disabled = true;
-                targetTimeInput.disabled = true;
-                setTargetBtn.disabled = true;
                 break;
-            case 'stopped': // After finishing
+            case 'stopped':
                 startBtn.classList.remove('hidden');
-                startBtn.disabled = !targetDateTime; // Allow starting a new run
+                startBtn.disabled = !hasValidTarget; // Allow starting new run if target exists
                 resetBtn.disabled = false; // Allow reset after finishing
-                // Re-enable target setting
-                targetDateInput.disabled = false;
-                targetTimeInput.disabled = false;
-                setTargetBtn.disabled = false;
                 break;
         }
-         // Special case: if elapsedTime > 0 but state is idle/stopped, enable Reset
-         if (elapsedTime > 0 && (stopwatchState === 'idle' || stopwatchState === 'stopped')) {
-              resetBtn.disabled = false;
-         }
     }
-
 
     function stopwatchTick() {
         if (stopwatchState !== 'running') {
@@ -796,24 +938,20 @@
             return;
         }
         try {
-            // Calculate time elapsed since the last start/resume
             const currentRunTime = Date.now() - startTime;
-            // Total elapsed time is previous elapsed time + current run time
             const currentTotalElapsedTime = elapsedTime + currentRunTime;
-
             stopwatchDisplay.textContent = formatStopwatchTime(currentTotalElapsedTime);
-            updateProgressBar(currentTotalElapsedTime);
+            updateProgressBar(currentTotalElapsedTime); // Progress depends on estimatedDurationMs
         } catch (error) {
             console.error("Error in stopwatch tick:", error);
-            finishStopwatch(); // Stop on error
+            finishStopwatch();
         }
     }
 
     function startStopwatchInterval() {
-        stopStopwatchInterval(); // Clear any existing interval first
-        // Update start time *before* starting the interval
+        stopStopwatchInterval();
         startTime = Date.now();
-        stopwatchIntervalId = setInterval(stopwatchTick, 50); // Update roughly 20 times/sec
+        stopwatchIntervalId = setInterval(stopwatchTick, 50);
         console.log("Stopwatch interval started with ID:", stopwatchIntervalId);
     }
 
@@ -825,181 +963,211 @@
         }
     }
 
-    // Action: Start a new run
+    // MODIFIED: Calculate estimatedDurationMs based on targetMode
     function startStopwatch() {
-        if (stopwatchState !== 'idle' || !targetDateTime) {
-            if (!targetDateTime) showMessage("Vui lòng đặt mục tiêu trước khi bắt đầu.", 'warning');
+        // Check if a valid target is set based on the current mode
+        const hasValidTarget = (targetMode === 'time' && targetDateTime) || (targetMode === 'duration' && targetDurationMinutes > 0);
+        if (stopwatchState !== 'idle' || !hasValidTarget) {
+            if (!hasValidTarget) showMessage("Vui lòng đặt mục tiêu hợp lệ trước khi bắt đầu.", 'warning');
             return;
         }
-        console.log("Starting stopwatch...");
+
+        console.log("Starting stopwatch in mode:", targetMode);
         clearMessage();
-        arrivalStatus.textContent = ''; // Clear previous arrival status
+        arrivalStatus.textContent = '';
         arrivalStatus.className = '';
 
-        stopwatchStartDate = new Date(); // Record the absolute start time
-        elapsedTime = 0; // Reset elapsed time for a new run
-        estimatedDurationMs = targetDateTime.getTime() - stopwatchStartDate.getTime();
+        stopwatchStartDate = new Date(); // Record absolute start time
+        elapsedTime = 0; // Reset elapsed time for new run
+        estimatedDurationMs = 0; // Reset estimated duration
+        projectedTargetDateTime = null; // Reset projected end time
 
-        if (estimatedDurationMs <= 0) {
-             showMessage("Lỗi: Thời gian mục tiêu không hợp lệ so với thời điểm bắt đầu.", 'error');
-             // Reset target info but keep inputs enabled
-             targetInfo.innerHTML = `Mục tiêu: <span>${formatTimeHHMMSS(targetDateTime)} (${targetDateTime.toLocaleDateString('vi-VN')})</span> <span style="color: #d9534f;">(Đã qua)</span>`;
-             targetDateTime = null; // Invalidate target
-             updateStopwatchUI('idle');
-             return;
+        // Calculate estimated duration and projected end time based on mode
+        if (targetMode === 'time') {
+            estimatedDurationMs = targetDateTime.getTime() - stopwatchStartDate.getTime();
+            projectedTargetDateTime = targetDateTime; // Already set
+            if (estimatedDurationMs <= 0) {
+                showMessage("Lỗi: Thời gian mục tiêu không hợp lệ so với thời điểm bắt đầu.", 'error');
+                clearTargetState(); // Clear the invalid target
+                updateStopwatchUI('idle');
+                return;
+            }
+        } else { // duration mode
+            estimatedDurationMs = targetDurationMinutes * 60 * 1000;
+            projectedTargetDateTime = new Date(stopwatchStartDate.getTime() + estimatedDurationMs); // Calculate projected end
+            if (estimatedDurationMs <= 0) { // Should have been caught by input validation, but double-check
+                 showMessage("Lỗi: Thời lượng mục tiêu không hợp lệ.", 'error');
+                 clearTargetState();
+                 updateStopwatchUI('idle');
+                 return;
+            }
+             // Update target info to show projected end time as well
+             targetInfo.innerHTML = `Mục tiêu: <span>${targetDurationMinutes} phút</span> (Dự kiến kết thúc: ${formatTimeHHMMSS(projectedTargetDateTime)})`;
         }
 
+        console.log("Estimated Duration (ms):", estimatedDurationMs, "Projected End:", projectedTargetDateTime);
+
         updateStopwatchUI('running');
-        startStopwatchInterval(); // Start the timer updates
-        progressBar.style.width = '0%'; // Ensure progress bar starts at 0
+        startStopwatchInterval();
+        progressBar.style.width = '0%';
         progressBar.textContent = '0%';
         progressBarContainer.setAttribute('aria-valuenow', '0');
-        progressBar.style.backgroundColor = '#5cb85c'; // Reset color
+        progressBar.style.backgroundColor = '#5cb85c';
     }
 
-    // Action: Pause the current run
     function pauseStopwatch() {
         if (stopwatchState !== 'running') return;
         console.log("Pausing stopwatch...");
-        stopStopwatchInterval(); // Stop updates
-
-        // Add the time elapsed during this run segment to the total elapsedTime
+        stopStopwatchInterval();
         const currentRunTime = Date.now() - startTime;
         elapsedTime += currentRunTime;
-        startTime = 0; // Reset start time as we are paused
-
+        startTime = 0;
         updateStopwatchUI('paused');
-        stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime); // Update display with final paused time
-        updateProgressBar(elapsedTime); // Update progress bar to paused state
+        stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime);
+        updateProgressBar(elapsedTime);
     }
 
-    // Action: Resume after pausing
     function resumeStopwatch() {
         if (stopwatchState !== 'paused') return;
         console.log("Resuming stopwatch...");
         updateStopwatchUI('running');
-        startStopwatchInterval(); // Restart updates (startTime is set inside this function)
+        startStopwatchInterval();
     }
 
-    // Action: Finish the current run (Stop button)
+    // MODIFIED: Handle finish logic for both modes
     function finishStopwatch() {
         if (stopwatchState !== 'running' && stopwatchState !== 'paused') return;
         console.log("Finishing stopwatch...");
-        const endTimeMs = Date.now(); // Record exact end time
-        stopStopwatchInterval(); // Stop updates
+        const endTimeMs = Date.now();
+        stopStopwatchInterval();
 
-        // Calculate final elapsedTime
         if (stopwatchState === 'running') {
-            // If it was running, add the last segment's time
             const currentRunTime = endTimeMs - startTime;
             elapsedTime += currentRunTime;
         }
-        // If paused, elapsedTime is already up-to-date
-
-        startTime = 0; // Reset start time
+        startTime = 0;
 
         stopwatchDisplay.textContent = formatStopwatchTime(elapsedTime);
-        updateProgressBar(elapsedTime); // Final progress bar update
+        updateProgressBar(elapsedTime); // Final progress update
 
-        if (!stopwatchStartDate || !targetDateTime) {
-            console.error("Lỗi: Thiếu stopwatchStartDate hoặc targetDateTime khi kết thúc.");
-            showMessage("Lỗi dữ liệu khi kết thúc bấm giờ.", 'error');
-            resetStopwatch(true); // Reset everything on critical error
-            return;
+        // --- Validate necessary data ---
+        if (!stopwatchStartDate || !estimatedDurationMs || estimatedDurationMs <= 0 || !projectedTargetDateTime) {
+             console.error("Lỗi: Thiếu dữ liệu cần thiết (startDate, estimatedDuration, projectedTarget) khi kết thúc.");
+             showMessage("Lỗi dữ liệu khi kết thúc bấm giờ.", 'error');
+             resetStopwatch(true); // Reset everything on critical error
+             return;
         }
 
         const endTime = new Date(endTimeMs);
 
-        // --- Calculate Arrival Status ---
-        let arrivalStatusText = '';
-        let arrivalStatusClass = '';
-        const diffMs = targetDateTime.getTime() - endTime.getTime();
-        const diffMinutes = Math.round(Math.abs(diffMs) / (1000 * 60));
-        const diffSeconds = Math.round(Math.abs(diffMs) / 1000);
+        // --- Calculate Arrival/Completion Status ---
+        let finalStatusText = '';
+        let finalStatusClass = '';
+        const differenceMs = projectedTargetDateTime.getTime() - endTime.getTime(); // Positive if finished early/on time
 
-        if (diffMs > 59999) { // More than 1 minute early (adjust threshold as needed)
-            arrivalStatusText = `✅ Đến sớm ${diffMinutes} phút!`;
-            arrivalStatusClass = 'early';
-        } else if (diffMs < -59999) { // More than 1 minute late
-            arrivalStatusText = `❌ Đã muộn ${diffMinutes} phút.`;
-            arrivalStatusClass = 'late';
-        } else { // Within +/- 1 minute
-             arrivalStatusText = `👍 Đến gần đúng giờ! (${diffMs >= 0 ? '+' : ''}${diffSeconds} giây)`;
-             arrivalStatusClass = 'on-time';
+        if (targetMode === 'time') {
+            // --- Time Mode Status ---
+            const diffMinutes = Math.round(Math.abs(differenceMs) / (1000 * 60));
+            const diffSeconds = Math.round(Math.abs(differenceMs) / 1000);
+            if (differenceMs > 59999) { // More than 1 min early
+                finalStatusText = `✅ Đến sớm ${diffMinutes} phút!`;
+                finalStatusClass = 'early';
+            } else if (differenceMs < -59999) { // More than 1 min late
+                finalStatusText = `❌ Đã muộn ${diffMinutes} phút.`;
+                finalStatusClass = 'late';
+            } else { // Within +/- 1 min
+                finalStatusText = `👍 Đến gần đúng giờ! (${differenceMs >= 0 ? '+' : ''}${diffSeconds} giây)`;
+                finalStatusClass = 'on-time';
+            }
+        } else {
+            // --- Duration Mode Status ---
+            const timeDiffReadable = formatDurationReadable(Math.abs(differenceMs));
+            if (elapsedTime <= estimatedDurationMs) { // Completed within or exactly on time
+                 finalStatusText = `✅ Hoàn thành trong ${formatDurationReadable(elapsedTime)}!`;
+                 if (differenceMs > 0) { // Add how much time was saved if any
+                     finalStatusText += ` (Sớm ${timeDiffReadable})`;
+                 }
+                 finalStatusClass = 'completed';
+            } else { // Exceeded duration
+                 finalStatusText = `❌ Vượt quá mục tiêu ${timeDiffReadable}. (Tổng: ${formatDurationReadable(elapsedTime)})`;
+                 finalStatusClass = 'exceeded';
+            }
         }
-        arrivalStatus.textContent = arrivalStatusText;
-        arrivalStatus.className = arrivalStatusClass;
+        arrivalStatus.textContent = finalStatusText;
+        arrivalStatus.className = finalStatusClass;
 
         // --- Prepare History Entry ---
         const startDateStr = stopwatchStartDate.toLocaleDateString('vi-VN');
         const startTimeStr = formatTimeHHMMSS(stopwatchStartDate);
         const endTimeStr = formatTimeHHMMSS(endTime);
-        const targetDateTimeStr = formatTimeHHMMSS(targetDateTime) + ' (' + targetDateTime.toLocaleDateString('vi-VN') + ')';
-        const finalDurationStr = formatStopwatchTime(elapsedTime);
-        // More readable duration (e.g., 5 phút 12 giây)
-        const totalSecondsRaw = Math.floor(elapsedTime / 1000);
-        const totalMinutes = Math.floor(totalSecondsRaw / 60);
-        const remainingSeconds = totalSecondsRaw % 60;
-        const durationMinutesStr = `${totalMinutes} phút ${remainingSeconds} giây`;
+        const finalDurationStr = formatStopwatchTime(elapsedTime); // Precise duration
+        const durationMinutesStr = formatDurationReadable(elapsedTime); // Readable duration
 
         const newEntry = {
-            id: Date.now(), // Unique ID based on timestamp
+            id: Date.now(),
+            targetMode: targetMode, // Store the mode used
             startDateStr,
             startTimeStr,
             endTimeStr,
-            targetDateTimeStr, // Combined target date and time
-            finalDurationStr, // Precise duration HH:MM:SS.ms
-            durationMinutesStr, // Readable duration M phút S giây
-            arrivalStatusText,
-            arrivalStatusClass
+            finalDurationStr,
+            durationMinutesStr,
+            arrivalStatusText: finalStatusText, // Use the calculated status text
+            arrivalStatusClass: finalStatusClass, // Use the calculated status class
+            // Store specific target info based on mode
+            ...(targetMode === 'time' && { targetDateTimeStr: formatTimeHHMMSS(targetDateTime) + ' (' + targetDateTime.toLocaleDateString('vi-VN') + ')' }),
+            ...(targetMode === 'duration' && { targetDurationMinutes: targetDurationMinutes, projectedEndTimeStr: formatTimeHHMMSS(projectedTargetDateTime) })
         };
 
         travelHistory.push(newEntry);
         saveHistory();
-        currentPage = 1; // Go to first page to show the latest entry
+        currentPage = 1;
         displayHistory();
 
-        updateStopwatchUI('stopped'); // Update UI to stopped state
+        updateStopwatchUI('stopped');
     }
 
-
-    // Action: Reset stopwatch and optionally inputs
-    function resetStopwatch(clearInputs = true) {
+    // MODIFIED: Reset target mode state as well
+    function resetStopwatch(clearInputsAndTarget = true) {
         console.log("Resetting stopwatch...");
-        stopStopwatchInterval(); // Stop updates
+        stopStopwatchInterval();
 
-        // Reset state variables
         elapsedTime = 0;
         startTime = 0;
         stopwatchStartDate = null;
-        estimatedDurationMs = 0;
-        if (clearInputs) {
-            targetDateTime = null; // Clear target only if requested
-            targetDateInput.value = formatDateYYYYMMDD(new Date()); // Reset date to today
-            targetTimeInput.value = "06:55"; // Reset time to default
-            targetInfo.textContent = 'Chưa đặt mục tiêu';
+        // Don't reset estimatedDurationMs or projectedTargetDateTime here, they are set on start
+
+        stopwatchDisplay.textContent = formatStopwatchTime(0);
+        // Don't reset progress bar/arrival status here, clearTargetState does it
+
+        if (clearInputsAndTarget) {
+            clearTargetState(); // Clear target variables and related UI
+            // Reset inputs to default
+            setDefaultInputs();
+            // Reset mode selector to 'time' (or load from preference if needed)
+            // Let's stick to resetting to 'time' for simplicity on full reset
+            targetMode = 'time';
+            targetModeTimeRadio.checked = true;
+            handleTargetModeChange(); // Update visible inputs based on reset mode
+        } else {
+             // If not clearing inputs, just clear arrival status and progress from previous run
+             arrivalStatus.textContent = '';
+             arrivalStatus.className = '';
+             progressBar.style.width = '0%';
+             progressBar.textContent = '';
+             progressBarContainer.setAttribute('aria-valuenow', '0');
+             progressBar.style.backgroundColor = '#5cb85c';
         }
 
-        // Reset displays
-        stopwatchDisplay.textContent = formatStopwatchTime(0);
-        progressBar.style.width = '0%';
-        progressBar.textContent = '';
-        progressBarContainer.setAttribute('aria-valuenow', '0');
-        progressBar.style.backgroundColor = '#5cb85c';
-        arrivalStatus.textContent = '';
-        arrivalStatus.className = '';
-        clearMessage();
-
-        updateStopwatchUI('idle'); // Set UI to initial idle state
+        updateStopwatchUI('idle'); // Set UI to initial idle state (will enable/disable Start based on target)
     }
 
     // === History Logic ===
+    // MODIFIED: Display history based on targetMode stored in entry
     function displayHistory() {
         try {
-            travelHistoryList.innerHTML = ''; // Clear previous list
+            travelHistoryList.innerHTML = '';
             const noHistoryMsgElement = travelHistoryList.querySelector('.no-history-message');
-             if (noHistoryMsgElement) noHistoryMsgElement.remove(); // Remove placeholder if exists
-
+            if (noHistoryMsgElement) noHistoryMsgElement.remove();
 
             clearHistoryBtn.disabled = travelHistory.length === 0;
 
@@ -1007,21 +1175,16 @@
                 pageInfo.textContent = 'Không có lịch sử';
                 prevPageBtn.disabled = true;
                 nextPageBtn.disabled = true;
-                // Add placeholder message back
                 travelHistoryList.innerHTML = '<li class="no-history-message">Không có lịch sử nào được ghi lại.</li>';
                 return;
             }
 
             const totalItems = travelHistory.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-            // Validate currentPage
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
-
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            // Get items for the current page, newest first
             const itemsToShow = travelHistory.slice().reverse().slice(startIndex, endIndex);
 
             console.log(`Displaying history page ${currentPage}/${totalPages}, items ${startIndex}-${endIndex - 1}`);
@@ -1030,18 +1193,30 @@
                 const li = document.createElement('li');
                 li.className = 'history-entry';
 
+                // Determine target display string based on mode in history
+                let targetDisplay = 'N/A';
+                if (entry.targetMode === 'time' && entry.targetDateTimeStr) {
+                    targetDisplay = entry.targetDateTimeStr;
+                } else if (entry.targetMode === 'duration' && entry.targetDurationMinutes) {
+                    targetDisplay = `${entry.targetDurationMinutes} phút`;
+                    // Optionally add projected end time if stored
+                    // if (entry.projectedEndTimeStr) {
+                    //    targetDisplay += ` (Dự kiến: ${entry.projectedEndTimeStr})`;
+                    // }
+                }
+
+                // Use status text and class directly from history entry
                 const statusHTML = entry.arrivalStatusText
                     ? `<div class="history-status ${entry.arrivalStatusClass || ''}">${entry.arrivalStatusText}</div>`
                     : '';
 
-                // Use entry.targetDateTimeStr which includes date
                 li.innerHTML = `
                     <div class="history-row">
                         <div class="history-group"><strong class="history-label">Bắt đầu:</strong> <span class="history-value">${entry.startTimeStr || 'N/A'} (${entry.startDateStr || 'N/A'})</span></div>
                         <div class="history-group"><strong class="history-label">Kết thúc:</strong> <span class="history-value">${entry.endTimeStr || 'N/A'}</span></div>
                     </div>
                     <div class="history-row">
-                         <div class="history-group"><strong class="history-label">Mục tiêu:</strong> <span class="history-value">${entry.targetDateTimeStr || 'N/A'}</span></div>
+                          <div class="history-group"><strong class="history-label">Mục tiêu:</strong> <span class="history-value">${targetDisplay}</span></div>
                     </div>
                     <div class="history-row">
                         <div class="history-group"><strong class="history-label">Thời gian:</strong> <span class="history-value">${entry.finalDurationStr || 'N/A'}</span> <span class="history-value-alt">(${entry.durationMinutesStr || 'N/A'})</span></div>
@@ -1062,18 +1237,19 @@
         }
     }
 
+
     function loadHistory() {
         try {
             const saved = localStorage.getItem(HISTORY_STORAGE_KEY);
             travelHistory = saved ? JSON.parse(saved) : [];
-            currentPage = 1; // Reset to first page on load
+            currentPage = 1;
             displayHistory();
             console.log(`Loaded ${travelHistory.length} history entries.`);
         } catch (error) {
             console.error("Error loading history:", error);
             showMessage("Lỗi khi tải lịch sử từ bộ nhớ.", 'error');
             travelHistory = [];
-            localStorage.removeItem(HISTORY_STORAGE_KEY); // Clear corrupted data
+            localStorage.removeItem(HISTORY_STORAGE_KEY);
             displayHistory();
         }
     }
@@ -1088,40 +1264,36 @@
     }
 
     function clearTravelHistory() {
-         // Use a custom confirmation dialog if possible, otherwise use confirm()
-         if (confirm("Bạn có chắc muốn xóa TOÀN BỘ lịch sử di chuyển không? Hành động này không thể hoàn tác.")) {
-             travelHistory = [];
-             saveHistory();
-             currentPage = 1;
-             displayHistory();
-             showMessage("Đã xóa toàn bộ lịch sử.", 'success');
-         }
+        if (confirm("Bạn có chắc muốn xóa TOÀN BỘ lịch sử không? Hành động này không thể hoàn tác.")) {
+            travelHistory = [];
+            saveHistory();
+            currentPage = 1;
+            displayHistory();
+            showMessage("Đã xóa toàn bộ lịch sử.", 'success');
+        }
     }
 
-    // === Wake Lock Logic ===
+    // === Wake Lock Logic === (No changes needed here)
     async function toggleWakeLock() {
         if (!('wakeLock' in navigator)) {
             showMessage('Trình duyệt không hỗ trợ tính năng giữ màn hình sáng.', 'warning');
             return;
         }
-
         try {
-            if (wakeLock) { // If wake lock is active, release it
+            if (wakeLock) {
                 await wakeLock.release();
                 wakeLock = null;
                 console.log('Wake Lock released.');
                 wakeLockBtn.classList.remove('active');
                 wakeLockBtn.title = 'Giữ màn hình sáng';
                 showMessage('Đã tắt chế độ giữ màn hình sáng.', 'info');
-            } else { // If wake lock is not active, request it
+            } else {
                 wakeLock = await navigator.wakeLock.request('screen');
                 wakeLock.addEventListener('release', () => {
-                    // This happens if the lock is released by the system (e.g., tab hidden)
                     console.log('Wake Lock was released automatically.');
                     wakeLock = null;
                     wakeLockBtn.classList.remove('active');
                     wakeLockBtn.title = 'Giữ màn hình sáng';
-                    // Don't show a message here as it might be intrusive if user switched tabs
                 });
                 console.log('Wake Lock active.');
                 wakeLockBtn.classList.add('active');
@@ -1130,101 +1302,117 @@
             }
         } catch (err) {
             console.error(`Wake Lock Error: ${err.name}, ${err.message}`);
-            wakeLock = null; // Ensure wakeLock state is correct
+            wakeLock = null;
             wakeLockBtn.classList.remove('active');
             wakeLockBtn.title = 'Giữ màn hình sáng (Lỗi)';
             showMessage(`Lỗi Wake Lock: ${err.message}`, 'error');
         }
     }
 
-    // Re-acquire wake lock if tab becomes visible again and it was active before
     async function handleVisibilityChange() {
         if (wakeLock !== null && document.visibilityState === 'visible') {
             try {
-                 // Request a new lock immediately when visible
-                 await toggleWakeLock(); // Release the old handle (if any)
-                 await toggleWakeLock(); // Request a new one
-                 console.log('Wake Lock re-acquired on visibility change.');
+                await toggleWakeLock(); // Release old
+                await toggleWakeLock(); // Request new
+                console.log('Wake Lock re-acquired on visibility change.');
             } catch (err) {
-                 console.error('Failed to re-acquire Wake Lock:', err);
-                 showMessage('Không thể tự động bật lại chế độ giữ sáng.', 'warning');
+                console.error('Failed to re-acquire Wake Lock:', err);
+                showMessage('Không thể tự động bật lại chế độ giữ sáng.', 'warning');
             }
         }
     }
 
     // === Initialization ===
     function setDefaultInputs() {
-         // Set default date to today
-         targetDateInput.value = formatDateYYYYMMDD(new Date());
-         // Set default time
-         targetTimeInput.value = "06:55";
+        targetDateInput.value = formatDateYYYYMMDD(new Date());
+        targetTimeInput.value = "06:55";
+        targetDurationInput.value = ''; // Clear duration input initially
     }
 
+    // MODIFIED: Load target mode preference as well
     function loadPreferences() {
-         const savedFormat = localStorage.getItem(FORMAT_STORAGE_KEY);
-         if (savedFormat === '24') {
-             is24HourFormat = true;
-             formatToggleButton.textContent = '12h';
-         } else {
-             is24HourFormat = false;
-             formatToggleButton.textContent = '24h';
-         }
-         updateClock(); // Update clock display based on loaded format
+        // Load format preference
+        const savedFormat = localStorage.getItem(FORMAT_STORAGE_KEY);
+        if (savedFormat === '24') {
+            is24HourFormat = true;
+            formatToggleButton.textContent = '12h';
+        } else {
+            is24HourFormat = false;
+            formatToggleButton.textContent = '24h';
+        }
+        updateClock();
+
+        // Load target mode preference
+        const savedMode = localStorage.getItem(TARGET_MODE_STORAGE_KEY);
+        if (savedMode === 'duration') {
+            targetMode = 'duration';
+            targetModeDurationRadio.checked = true;
+        } else {
+            targetMode = 'time'; // Default to time
+            targetModeTimeRadio.checked = true;
+        }
+        // Don't call handleTargetModeChange here yet, wait for DOM ready
     }
 
+    // MODIFIED: Save target mode preference
     function savePreferences() {
-         localStorage.setItem(FORMAT_STORAGE_KEY, is24HourFormat ? '24' : '12');
+        localStorage.setItem(FORMAT_STORAGE_KEY, is24HourFormat ? '24' : '12');
+        localStorage.setItem(TARGET_MODE_STORAGE_KEY, targetMode); // Save current target mode
     }
 
 
     function initializeApp() {
-        console.log("Initializing App (Improved Version)...");
+        console.log("Initializing App (v4 - Duration Target)...");
         try {
-            // --- Clear any stray intervals ---
+            // Clear any stray intervals
             if (mainClockIntervalId) clearInterval(mainClockIntervalId);
             if (stopwatchIntervalId) clearInterval(stopwatchIntervalId);
             mainClockIntervalId = null;
             stopwatchIntervalId = null;
 
-            // --- Start Main Clock ---
+            // Start Main Clock
             mainClockIntervalId = setInterval(updateClock, 1000);
-            loadPreferences(); // Load format preference first
-            updateClock(); // Initial clock display
+            loadPreferences(); // Loads format AND target mode state
+            updateClock(); // Initial clock display based on loaded format
             console.log("Main clock interval started with ID:", mainClockIntervalId);
 
-            // --- Set Default Inputs ---
+            // Set Default Input Values
             setDefaultInputs();
 
-            // --- Attach Event Listeners ---
+            // Apply loaded target mode to UI *after* DOM is ready
+            handleTargetModeChange();
+
+            // --- Event Listeners ---
             formatToggleButton.addEventListener('click', () => {
                 is24HourFormat = !is24HourFormat;
                 formatToggleButton.textContent = is24HourFormat ? '12h' : '24h';
-                savePreferences(); // Save the new preference
-                updateClock(); // Update display immediately
+                savePreferences();
+                updateClock();
             });
-            setTargetBtn.addEventListener('click', setTargetTime);
+
+            // Target Mode Radio Buttons Listener
+            targetModeTimeRadio.addEventListener('change', handleTargetModeChange);
+            targetModeDurationRadio.addEventListener('change', handleTargetModeChange);
+
+            // Target Setting Buttons Listener (using the common function)
+            setTargetBtn.addEventListener('click', setTarget);
+            setDurationTargetBtn.addEventListener('click', setTarget); // Both buttons call the same function
 
             // Stopwatch Controls
             startBtn.addEventListener('click', startStopwatch);
             pauseBtn.addEventListener('click', pauseStopwatch);
             resumeBtn.addEventListener('click', resumeStopwatch);
-            stopBtn.addEventListener('click', finishStopwatch); // Finish button
-            resetBtn.addEventListener('click', () => resetStopwatch(true)); // Reset all
+            stopBtn.addEventListener('click', finishStopwatch);
+            resetBtn.addEventListener('click', () => resetStopwatch(true));
             clearHistoryBtn.addEventListener('click', clearTravelHistory);
 
             // Pagination
             prevPageBtn.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayHistory();
-                }
+                if (currentPage > 1) { currentPage--; displayHistory(); }
             });
             nextPageBtn.addEventListener('click', () => {
                 const totalPages = Math.ceil(travelHistory.length / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    displayHistory();
-                }
+                if (currentPage < totalPages) { currentPage++; displayHistory(); }
             });
 
             // Wake Lock
@@ -1238,27 +1426,26 @@
 
             // --- Load History & Set Initial UI State ---
             loadHistory();
-            resetStopwatch(false); // Initial reset without clearing default inputs
-            updateStopwatchUI('idle'); // Explicitly set initial UI state
+            // Initial reset without clearing defaults, applies loaded target mode
+            resetStopwatch(false);
+            // updateStopwatchUI('idle'); // Called inside resetStopwatch
 
             console.log("App Initialized Successfully.");
 
         } catch (error) {
             console.error("Error during app initialization:", error);
-            showMessage("Đã xảy ra lỗi nghiêm trọng khi khởi tạo ứng dụng. Vui lòng thử tải lại trang.", 'error', 0); // Persistent error message
+            showMessage("Đã xảy ra lỗi nghiêm trọng khi khởi tạo ứng dụng. Vui lòng thử tải lại trang.", 'error', 0);
         }
     }
 
     // --- Run Initialization ---
-    // Use DOMContentLoaded for safety, though modern browsers might handle direct call okay
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initializeApp);
     } else {
-        initializeApp(); // DOM already loaded
+        initializeApp();
     }
 
 </script>
 
 </body>
 </html>
-
